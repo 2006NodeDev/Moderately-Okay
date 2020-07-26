@@ -1,7 +1,7 @@
 {
-  "name": "project-0-bfirdevs",
+  "name": "project-2",
   "version": "1.0.0",
-  "description": "The Expense Reimbursement System (ERS) will manage the process of reimbursing employees for expenses incurred while on company time. All employees in the company can login and submit requests for reimbursement and view their past tickets and pending requests. Finance managers can log in and view all reimbursement requests and past history for all employees in the company. Finance managers are authorized to approve and deny requests for expense reimbursement.",
+  "description": "Project 2. Allows for customers to search for tattoo artists and book appointments with them.",
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,19 +9,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/2006NodeDev/project-0-Bfirdevs.git"
+    "url": "git+https://github.com/2006NodeDev/Moderately-Okay.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/2006NodeDev/project-0-Bfirdevs/issues"
+    "url": "https://github.com/2006NodeDev/Moderately-Okay/issues"
   },
-  "homepage": "https://github.com/2006NodeDev/project-0-Bfirdevs#readme",
+  "homepage": "https://github.com/2006NodeDev/Moderately-Okay#readme",
   "dependencies": {
     "@google-cloud/storage": "^5.1.2",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "node": "^14.5.0",
     "pg": "^8.2.1",
     "save": "^2.4.0"
   },
