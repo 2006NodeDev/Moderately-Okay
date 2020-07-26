@@ -2,12 +2,16 @@ create schema tattoobooking_artist_service;
 set schema 'tattoobooking_artist_service';
 
 
+create table artists(
+	artist_id serial primary key,
+	first_name text not null,
+	last_name text not null
+);
+
 create table shops(
 	shop_id serial primary key,
 	shop_name text not null,
-	street_address text not null,
-	city text not null,
-	state text not null,
+	address text not null,
 	phone_number text not null,
 	email text not null,
 	open_at time,
@@ -21,6 +25,7 @@ create table styles(
 
 create table shop_artists(
 	shop int references shops ("shop_id"),
+<<<<<<< HEAD
 	artist int references tattoobooking_user_service.users ("user_id")
 );
 
@@ -32,11 +37,25 @@ create table artist_styles(
 create table bookings(
 	booking_id serial primary key,
 	customer int references tattoobooking_user_service.users("user_id"),
+=======
+	artist int references artists ("artist_id")
+);
+
+create table artist_styles(
+	artist int references artists ("artist_id"),
+	"style" int references styles ("style_id")
+);
+
+create table tattoo_details(
+	tattoo_id serial primary key,
+	"user" int references tattoobooking_user_service.users("user_id"),
+>>>>>>> ecff60ae8711802e6f44ecbdaaecca8ce5d88ecb
 	"style" int references styles ("style_id"),
 	"size" text,
 	"location" text,
 	image text,
 	color BOOLEAN,
+<<<<<<< HEAD
 	artist int references tattoobooking_user_service.users ("user_id"),
 	shop int references shops ("shop_id"),
 	"date" date,
@@ -53,6 +72,16 @@ values ('Inklahoma Tattoo Studios', '520 North East St', 'Guymon', 'OK', '910-65
 insert into styles ("style_name") values 
 ('neo-trad'),
 ('trad'),
+=======
+	artist int references artists ("artist_id"),
+	shop int references shops ("shop_id")
+);
+
+insert into styles ("style_name") values 
+('neo-trad'),
+('trad'),
+('modern'),
+>>>>>>> ecff60ae8711802e6f44ecbdaaecca8ce5d88ecb
 ('tribal'),
 ('new school'),
 ('Japanese'),
@@ -60,6 +89,7 @@ insert into styles ("style_name") values
 ('illustrative'),
 ('watercolor'),
 ('realisim'),
+<<<<<<< HEAD
 ('other');
 
 insert into shop_artists values
@@ -94,3 +124,6 @@ values (9, 1, '5 by 5', 'arm', 'y', 5, 3, '10/5/2020', '3:00 PM');
 
 insert into bookings("customer", "style", "artist", "shop", "date", "time")
 values (7, 7, 3, 2, '11/17/2020', '1:00 PM');
+=======
+('other');
+>>>>>>> ecff60ae8711802e6f44ecbdaaecca8ce5d88ecb
