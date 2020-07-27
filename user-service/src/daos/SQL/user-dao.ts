@@ -87,43 +87,46 @@ export async function getUserByusernameAndPassword(username, password):Promise<U
     }
 }
 
-
-export async function UpdateOnExistingUser(updatedUser:Users):Promise<Users>{
+//updated for project 2
+export async function UpdateExistingUser(updatedUser:Users):Promise<Users>{
     let client : PoolClient
     try {
         client = await connectionPool.connect()
         await client.query('BEGIN;')
         if(updatedUser.username){
-            await client.query('update employee_data.users set username = $1 where user_id = $2;', [updatedUser.username, updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set username = $1 where user_id = $2;', [updatedUser.username, updatedUser.userId])
         }
         if(updatedUser.password){
-            await client.query('update employee_data.users set password = $1 where user_id = $2;', [updatedUser.password, updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set password = $1 where user_id = $2;', [updatedUser.password, updatedUser.userId])
         }
-        if(updatedUser.first_name){
-            await client.query('update employee_data.users set first_name = $1 where user_id = $2;', [updatedUser.first_name, updatedUser.user_id])
+        if(updatedUser.firstName){
+            await client.query('update tattoobooking_user_service.users set first_name = $1 where user_id = $2;', [updatedUser.firstName, updatedUser.userId])
         }
-        if(updatedUser.last_name){
-            await client.query('update employee_data.users set last_name= $1 where user_id = $2;', [updatedUser.last_name, updatedUser.user_id])
+        if(updatedUser.lastName){
+            await client.query('update tattoobooking_user_service.users set last_name= $1 where user_id = $2;', [updatedUser.lastName, updatedUser.userId])
+        }
+        if(updatedUser.birthday){
+            await client.query('update tattoobooking_user_service.users set birthday = $1 where user_id = $2;', [updatedUser.birthday , updatedUser.userId])
+        }
+        if(updatedUser.phoneNumber){
+            await client.query('update tattoobooking_user_service.users set phone_number = $1 where user_id = $2;', [updatedUser.phoneNumber, updatedUser.userId])
         }
         if(updatedUser.email){
-            await client.query('update employee_data.users set email = $1 where user_id = $2;', [updatedUser.email , updatedUser.user_id])
-        }
-        if(updatedUser.email){
-            await client.query('update employee_data.users set image = $1 where user_id = $2;', [updatedUser.image , updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set email = $1 where user_id = $2;', [updatedUser.email , updatedUser.userId])
         }
         if(updatedUser.role ){
-          let role_id =   await client.query('select r.role_id from employee_data.roles r  where r.role = $1;', [updatedUser.role])
+          let role_id =   await client.query('select r.role_id from tattoobooking_user_service.roles r  where r.role = $1;', [updatedUser.role])
           if(role_id.rowCount === 0){
               throw new Error ('Role not found')
           }
           role_id = role_id.rows[0].role_id
-          await client.query('update employee_data.users set "role"= $1 where user_id = $2;', [role_id, updatedUser.user_id])
+          await client.query('update tattoobooking_user_service.users set "role"= $1 where user_id = $2;', [role_id, updatedUser.userId])
         }
         await client.query('COMMIT;') 
-        return findUserById(updatedUser.user_id)
+        return findUserById(updatedUser.userId)
 
     } catch (error) {
-        client && client.query('ROLLBACK;') // if any error occurs send it back
+        client && client.query('ROLLBACK;')
         if(error.message === 'Role not found'){
             throw new Error('Role not found')
         }
