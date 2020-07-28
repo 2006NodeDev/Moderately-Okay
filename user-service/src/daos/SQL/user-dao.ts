@@ -112,7 +112,7 @@ export async function UpdateOnExistingUser(updatedUser:Users):Promise<Users>{
             await client.query('update tattoobooking_user_service.users set birthday = $1 where user_id = $2;', [updatedUser.birthday , updatedUser.user_id])
         }
         if(updatedUser.phone_number){
-            await client.query('update tattoobooking_user_service.users set birthday = $1 where user_id = $2;', [updatedUser.phone_number , updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set phone_number = $1 where user_id = $2;', [updatedUser.phone_number , updatedUser.user_id])
         }
         
         if(updatedUser.role ){
