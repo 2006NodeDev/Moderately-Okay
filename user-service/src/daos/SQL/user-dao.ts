@@ -1,10 +1,11 @@
 import { PoolClient, QueryResult } from "pg";
 import { connectionPool } from ".";
-import { UsersDTOtoUsersConvertor } from "../../utils/UsersDTOConvertors";
-import { UserNotFound } from "../../errors/UserNotFoundError";
 import { Users } from "../../models/Users";
+import { UsersDTOtoUsersConvertor } from "../../utils/UsersDTOConvertors";
 import { AuthFailureError } from "../../errors/AuthFailureError";
+import { UserNotFound } from "../../errors/UserNotFoundError";
 import { UserMissingInputError } from "../../errors/UserMissingInputError";
+
 
 
 
@@ -87,8 +88,8 @@ export async function getUserByusernameAndPassword(username, password):Promise<U
     }
 }
 
-
-export async function UpdateOnExistingUser(updatedUser:Users):Promise<Users>{
+//updated for project 2
+export async function UpdateExistingUser(updatedUser:Users):Promise<Users>{
     let client : PoolClient
     try {
         client = await connectionPool.connect()
@@ -127,7 +128,7 @@ export async function UpdateOnExistingUser(updatedUser:Users):Promise<Users>{
         return findUserById(updatedUser.user_id)
 
     } catch (error) {
-        client && client.query('ROLLBACK;') // if any error occurs send it back
+        client && client.query('ROLLBACK;')
         if(error.message === 'Role not found'){
             throw new Error('Role not found')
         }
@@ -164,7 +165,7 @@ export async function submitNewUser(newUser: Users):Promise<Users>{
     } catch (error) {
         client && client.query('ROLLBACK;')
         if(error.message === 'Role not found') {
-            throw new UserMissingInputError
+            throw new UserMissingInputError();
         }
         console.log(error)
         throw new Error('un implemented error handling')

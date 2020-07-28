@@ -1,11 +1,14 @@
 import  express, { Request, Response, NextFunction } from 'express';
-
-import { userRouter } from './routers/user-router';
 import { loggingMiddleware } from './middlewares/logging-middleware';
-import { sessionMiddleware } from './middlewares/session-middlewate';
-import { corsFilter } from './middlewares/cors-filter';
-import { InvalidCredentialsError } from './errors/InvalidCredentialsError';
 import { getUserByusernameAndPassword } from './daos/SQL/user-dao';
+import { sessionMiddleware } from './middlewares/session-middleware';
+import { corsFilter } from './middlewares/cors-filter';
+import {userRouter} from './routers/user-router';
+import {InvalidCredentialsError} from  './errors/InvalidCredentialsError';
+
+
+
+
 
 const app = express();
 
@@ -14,7 +17,6 @@ app.use(loggingMiddleware)
 app.use(corsFilter)
 
 app.use(sessionMiddleware)
-
 //app.use(authenticationMiddleware) //asks for username and password 
 // custom middleware to run on all request
 
@@ -46,7 +48,7 @@ app.use((err, req, res, next) =>{
         res.status(err.statusCode).send(err.message)
     }else {
         console.log(err)
-        res.status(500).send("Oppps something went wrong")
+        res.status(500).send("Something went wrong")
     }
 })
 

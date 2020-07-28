@@ -1,5 +1,6 @@
-import { Users } from "../models/Users";
+
 import { UsersDTO } from "../dtos/user-dto";
+import { Users } from "../models/Users";
 
 //updated for proj2
 export function UsersDTOtoUsersConvertor(udto:UsersDTO) : Users{
