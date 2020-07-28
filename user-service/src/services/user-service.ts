@@ -1,4 +1,4 @@
-import { getAllUsers, findUserById, submitNewUser, UpdateOnExistingUser } from "../daos/SQL/user-dao";
+import { getAllUsers, findUserById, submitNewUser, UpdateExistingUser } from "../daos/SQL/user-dao";
 import { Users } from "../models/Users";
 import { SaveProfilePicture } from "../daos/CloudStorage/user-images";
 import { bucketBaseUrl } from "../daos/CloudStorage";
@@ -35,6 +35,6 @@ export async function SubmitNewUserService(newUser:Users):Promise<Users>{
     
 }
 
-export async function UpdateOnExistingUserService(user:Users):Promise<Users>{
-    return await UpdateOnExistingUser(user)
+export async function UpdateExistingUserService(user:Users):Promise<Users>{
+    return await UpdateExistingUser(user)
 }
