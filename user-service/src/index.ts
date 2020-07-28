@@ -1,5 +1,5 @@
 import  express, { Request, Response, NextFunction } from 'express';
-import { reimRouter } from './routers/reim-router';
+
 import { userRouter } from './routers/user-router';
 import { loggingMiddleware } from './middlewares/logging-middleware';
 import { sessionMiddleware } from './middlewares/session-middlewate';
@@ -17,7 +17,7 @@ app.use(sessionMiddleware)
 
 //app.use(authenticationMiddleware) //asks for username and password 
 // custom middleware to run on all request
-app.use('/reimbursements', reimRouter)
+
 app.use('/users', userRouter)
 app.get('/health', (req:Request, res:Response)=>{
     res.sendStatus(200)

@@ -15,10 +15,10 @@ export async function getAllUsers():Promise<Users[]>{
         client = await connectionPool.connect()
         let getAllUsers:QueryResult = await client.query(`select u.user_id, 
         u.username,  
-        u."password", u.first_name, 
-        u.last_name, u.email, u.image,
+        u."password", u.first_name, u
+        u.last_name, u.birthday, u.phone_number, u.email,
         r."role" , r.role_id
-        from employee_data.users u  left join employee_data.roles r on u."role" = r.role_id;`)
+        from tattoobooking_user_service.users u  left join tattoobooking_user_service.roles r on u."role" = r.role_id;`)
         return getAllUsers.rows.map(UsersDTOtoUsersConvertor)
     } catch (error) {
         console.error();
@@ -37,9 +37,9 @@ export async function findUserById(id:number):Promise<Users>{
         client = await connectionPool.connect()
         let getUserById:QueryResult = await client.query(`select u.username,  
         u."password", u.first_name, 
-        u.last_name, u.email, u.image,
+        u.last_name, u.email, u.birthday, u.phone_number,
         r."role" , r.role_id
-        from employee_data.users u  left join employee_data.roles r on u."role" = r.role_id 
+        from tattoobooking_user_service.users u  left join tattoobooking_user_service.roles r on u."role" = r.role_id 
         where u.user_id = $1;`, [id])
         if(getUserById.rowCount === 0){
             throw new Error('User not found')
@@ -65,9 +65,9 @@ export async function getUserByusernameAndPassword(username, password):Promise<U
         client = await connectionPool.connect()
         let getUserById:QueryResult = await client.query(`select u.user_id, u.username,  
         u."password", u.first_name, 
-        u.last_name, u.email, u.image,
+        u.last_name, u.email, u.birthday, u.phone_number,
         r."role" , r.role_id
-        from employee_data.users u  left join employee_data.roles r on u."role" = r.role_id 
+        from tattoobooking_user_service.users u  left join tattoobooking_user_service.users.roles r on u."role" = r.role_id 
         where u.username = $1 and u.password = $2;`, [username, password])
         if(getUserById.rowCount === 0){
             throw new Error('User not found')
@@ -94,30 +94,34 @@ export async function UpdateOnExistingUser(updatedUser:Users):Promise<Users>{
         client = await connectionPool.connect()
         await client.query('BEGIN;')
         if(updatedUser.username){
-            await client.query('update employee_data.users set username = $1 where user_id = $2;', [updatedUser.username, updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set username = $1 where user_id = $2;', [updatedUser.username, updatedUser.user_id])
         }
         if(updatedUser.password){
-            await client.query('update employee_data.users set password = $1 where user_id = $2;', [updatedUser.password, updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set password = $1 where user_id = $2;', [updatedUser.password, updatedUser.user_id])
         }
         if(updatedUser.first_name){
-            await client.query('update employee_data.users set first_name = $1 where user_id = $2;', [updatedUser.first_name, updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set first_name = $1 where user_id = $2;', [updatedUser.first_name, updatedUser.user_id])
         }
         if(updatedUser.last_name){
-            await client.query('update employee_data.users set last_name= $1 where user_id = $2;', [updatedUser.last_name, updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set last_name= $1 where user_id = $2;', [updatedUser.last_name, updatedUser.user_id])
         }
         if(updatedUser.email){
-            await client.query('update employee_data.users set email = $1 where user_id = $2;', [updatedUser.email , updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set email = $1 where user_id = $2;', [updatedUser.email , updatedUser.user_id])
         }
-        if(updatedUser.email){
-            await client.query('update employee_data.users set image = $1 where user_id = $2;', [updatedUser.image , updatedUser.user_id])
+        if(updatedUser.birthday){
+            await client.query('update tattoobooking_user_service.users set birthday = $1 where user_id = $2;', [updatedUser.birthday , updatedUser.user_id])
         }
+        if(updatedUser.phone_number){
+            await client.query('update tattoobooking_user_service.users set birthday = $1 where user_id = $2;', [updatedUser.phone_number , updatedUser.user_id])
+        }
+        
         if(updatedUser.role ){
-          let role_id =   await client.query('select r.role_id from employee_data.roles r  where r.role = $1;', [updatedUser.role])
+          let role_id =   await client.query('select r.role_id from tattoobooking_user_service.roles r  where r.role = $1;', [updatedUser.role])
           if(role_id.rowCount === 0){
               throw new Error ('Role not found')
           }
           role_id = role_id.rows[0].role_id
-          await client.query('update employee_data.users set "role"= $1 where user_id = $2;', [role_id, updatedUser.user_id])
+          await client.query('update tattoobooking_user_service.users set "role"= $1 where user_id = $2;', [role_id, updatedUser.user_id])
         }
         await client.query('COMMIT;') 
         return findUserById(updatedUser.user_id)
@@ -140,19 +144,19 @@ export async function submitNewUser(newUser: Users):Promise<Users>{
         client = await connectionPool.connect()
         await client.query('BEGIN;')
 
-        let role_id = await client.query(`select r.role_id from employee_data.roles r where r."role" = $1;`, [newUser.role])
+        let role_id = await client.query(`select r.role_id from tattoobooking_user_service.roles r where r."role" = $1;`, [newUser.role])
             if(role_id.rowCount === 0){
                 throw new Error('Role not found')
             } 
 
             role_id = role_id.rows[0].role_id
             
-        let newuserinfo = await client.query(`insert into employee_data.users("username", 
+        let newuserinfo = await client.query(`insert into tattoobooking_user_service.users("username", 
             "password",
             "first_name",
             "last_name",
-            "email", "image", "role") values ($1, $2, $3, $4, $5, $6, $7) returning "user_id" `, 
-            [newUser.username, newUser.password, newUser.first_name, newUser.last_name, newUser.email, newUser.image, role_id])
+            "email", "birthday", "phone_number", "role") values ($1, $2, $3, $4, $5, $6, $7, $8) returning "user_id" `, 
+            [newUser.username, newUser.password, newUser.first_name, newUser.last_name, newUser.email, newUser.phone_number, newUser.birthday, role_id])
             newUser.user_id = (await newuserinfo).rows[0].user_id
             await client.query('COMMIT;')
             return newUser
