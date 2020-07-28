@@ -1,21 +1,23 @@
 import express, {Request, Response, NextFunction} from 'express'
-import { getAllReimbursements, findReimbursementByStatusId, findReimbursementByUser, submitNewReimbursement, updateExistingReimbursement } from '../daos/SQL/reim-dao';
+import { getAllBookings, findBookingtByStatusId, findBookingByUser, submitNewBooking, updateExistingBooking } from '../daos/SQL/reim-dao';
 import { InvalidIdError } from '../errors/InvalidIdError';
 import { authenticationMiddleware } from '../middlewares/authentication-middleware';
-import { Reimbursements } from '../models/Reimbursements';
-import { ReimbursementInputError } from '../errors/ReimbursementInputError';
+import { Bookings } from '../models/Bookings';
+import { BookingInputError } from '../errors/BookingInputError';
 import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
 import { AuthenticationFailure } from '../errors/AuthenticationFailure';
 
+//updateBooking
 
-export let reimRouter = express.Router();
+export let bookingRouter = express.Router();
 
-reimRouter.use(authenticationMiddleware)
+bookingRouter.use(authenticationMiddleware)
 
-reimRouter.get('/', authorizationMiddleWare(['Finance Manager']),async (req:Request, res:Response, next:NextFunction)=>{
+//updated this func to reflect booking DONE
+bookingRouter.get('/', authorizationMiddleWare(['Finance Manager']),async (req:Request, res:Response, next:NextFunction)=>{
     try {
-        let reimburs = await getAllReimbursements()
-        res.json(reimburs)
+        let booking = await getAllBookings()
+        res.json(booking)
     } catch (error) {
         next(error)
     }
@@ -23,23 +25,24 @@ reimRouter.get('/', authorizationMiddleWare(['Finance Manager']),async (req:Requ
 })
 
 
-reimRouter.get('/status/:status_id', authorizationMiddleWare(['Finance Manager']), async(req:Request, res:Response, next:NextFunction)=>{
+bookingRouter.get('/status/:status_id', authorizationMiddleWare(['Finance Manager']), async(req:Request, res:Response, next:NextFunction)=>{
     let {status_id} = req.params
     if(isNaN(+status_id)){
         throw new InvalidIdError()
     }else{
-
        try {
-            let reimByStatusId = await findReimbursementByStatusId(+status_id)
-            res.json(reimByStatusId)
+            let bookingByStatusId = await findBookingtByStatusId(+status_id)
+            res.json(bookingByStatusId)
        } catch (error) {
            next(error)
        }
-    } 
-    
+    }     
 })
 
-reimRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Manager', 'User']), async(req:Request, res:Response, next:NextFunction)=>{
+//updates function name, exports, calls, and variables DONE
+// Updated booking fields per db PENDING
+
+bookingRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Manager', 'User']), async(req:Request, res:Response, next:NextFunction)=>{
     let {user_id} = req.params
 
     if(isNaN(+user_id)){
@@ -49,8 +52,8 @@ reimRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Mana
         next(new AuthenticationFailure())
     }else {
        try {
-            let reimByUserId = await findReimbursementByUser(+user_id)
-            res.json(reimByUserId)
+            let bookByUserId = await findBookingByUser(+user_id)
+            res.json(bookByUserId)
        } catch (error) {
            next(error)
        }
@@ -59,7 +62,7 @@ reimRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Mana
 
 // Submit a reimbursment
 
- reimRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
+bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
     
     let{
         amount,
@@ -71,9 +74,9 @@ reimRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Mana
     //console.log(author)
 
     if( !author || !amount || !description  || !type){
-        next(new ReimbursementInputError())
+        next(new BookingInputError())
     }else{
-        let newReimbursement: Reimbursements ={
+        let newBooking: Bookings ={
             reimbursement_id: 0,
             author,
             amount,
@@ -85,8 +88,8 @@ reimRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Mana
             type,
         }
         try {
-            let submitReim = await submitNewReimbursement(newReimbursement)
-            res.json(submitReim)
+            let submitBooking = await submitNewBooking(newBooking)
+            res.json(submitBooking)
         } catch (error) {
             next(error)
         }  
@@ -94,9 +97,10 @@ reimRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Mana
     
 })
 
-// Update Reimbursement patch 
-
-reimRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (req:Request, res:Response, next:NextFunction)=>{
+// Update Booking patch 
+//updates function name, exports, calls, and variables DONE
+// Updated booking fields per db PENDING
+bookingRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (req:Request, res:Response, next:NextFunction)=>{
     let{
         reimbursement_id,
         author,
@@ -110,7 +114,7 @@ reimRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (req:R
         next (new InvalidIdError());
     }
     
-        let updatedReimbursement:Reimbursements ={
+        let updatedBooking:Bookings ={
             reimbursement_id,
             author,
             amount,
@@ -121,15 +125,15 @@ reimRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (req:R
             status,
             type
         }
-        updatedReimbursement.author = author 
-        updatedReimbursement.amount = amount 
-        updatedReimbursement.description = description 
-        updatedReimbursement.status = status 
-        updatedReimbursement.type = type 
+        updatedBooking.author = author 
+        updatedBooking.amount = amount 
+        updatedBooking.description = description 
+        updatedBooking.status = status 
+        updatedBooking.type = type 
 
         try {
-            let updatedReimResults = await updateExistingReimbursement(updatedReimbursement)
-            res.json(updatedReimResults)
+            let updatedBookingResults = await updateExistingBooking(updatedBooking)
+            res.json(updatedBookingResults)
         } catch (error) {
             next(error)
         }

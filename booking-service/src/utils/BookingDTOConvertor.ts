@@ -1,7 +1,12 @@
-import { ReimbursementsDTO } from "../dtos/reim-dto";
-import { Reimbursements } from "../models/Reimbursements";
+import { BookingDTO } from "../dtos/book-dto";
+import { Bookings } from "../models/Bookings";
 
-export function ReimDTOtoReimbursementConvertor(rdto:ReimbursementsDTO) : Reimbursements{
+//changed function call  DONE
+//updates rdtos after updating book dto fields - inside return
+//update fields per db fields
+//updated model name to bookings DONE
+
+export function BookingDTOtoBookingConvertor(rdto:BookingDTO) : Bookings{
     return {
         reimbursement_id: rdto.reimbursement_id,
         author: rdto.author,

@@ -1,7 +1,7 @@
 import {HttpError} from './HttpError'
 
-export class UserNotFound extends HttpError{
+export class BookingNotFound extends HttpError{
     constructor(){
-        super(404, 'User Not Found')
+        super(404, 'Booking Not Found')
     }
 }

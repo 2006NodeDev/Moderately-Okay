@@ -1,5 +1,7 @@
+//changed class name DONE
+//Update field names per db 
 
-export class Reimbursements {
+export class Bookings {
     reimbursement_id: number // primary key
     author: number // foreign key --> User not null
     amount: number // not null

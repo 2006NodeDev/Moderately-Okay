@@ -1,7 +1,8 @@
 
+//done updating class to bookingDTO DONE
+// after udpating class fields PENDING
 
-
-export class ReimbursementsDTO{
+export class BookingDTO{
  
         reimbursement_id: number
         author: number
