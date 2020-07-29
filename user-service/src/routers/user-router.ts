@@ -12,7 +12,8 @@ export let userRouter = express.Router();
 
 userRouter.use(authenticationMiddleware)
 
-userRouter.get('/', authorizationMiddleWare(['Finance Manager', 'Admin']), async (req:Request, res:Response, next:NextFunction)=>{
+//get all
+userRouter.get('/', authorizationMiddleWare(['Admin']), async (req:Request, res:Response, next:NextFunction)=>{
     try {
         let getAllusers = await getAllUsersService()
         res.json(getAllusers)
@@ -21,11 +22,12 @@ userRouter.get('/', authorizationMiddleWare(['Finance Manager', 'Admin']), async
     }
 })
 
-userRouter.get('/:id', authorizationMiddleWare(['Finance Manager', 'Admin' ,'User']), async (req:Request, res:Response, next:NextFunction) =>{
+//find by id
+userRouter.get('/:id', authorizationMiddleWare(['Admin' ,'Customer', 'Artist']), async (req:Request, res:Response, next:NextFunction) =>{
     let {id} = req.params
     if(isNaN(+id)){
         res.status(400).send('Id must be a number')
-    }else if(req.session.user.userId !== +id && req.session.user.role === "User"){
+    }else if(req.session.user.userId !== +id && req.session.user.role === "Customer" || "Artist"){
         next(new AuthenticationFailure())
     }
     else {
@@ -40,7 +42,7 @@ userRouter.get('/:id', authorizationMiddleWare(['Finance Manager', 'Admin' ,'Use
 
 // Update User / Allowed Admin // For Project 1 user can also update his/her own info
 
-userRouter.patch('/', authorizationMiddleWare(['Admin', 'User']), async (req:Request, res:Response, next:NextFunction)=>{
+userRouter.patch('/', authorizationMiddleWare(['Admin', 'Customer', 'Artist']), async (req:Request, res:Response, next:NextFunction)=>{
     
         let{
         userId,
@@ -57,7 +59,7 @@ userRouter.patch('/', authorizationMiddleWare(['Admin', 'User']), async (req:Req
         if(!userId || isNaN(req.body.userId)){
             next(new InvalidIdError())
             
-        }else if(req.session.user.userId !== +userId  && req.session.user.role === "User"){
+        }else if(req.session.user.userId !== +userId  && req.session.user.role === "Customer" || "Artist"){
             next(new AuthenticationFailure())
         }else { 
         let updatedUser: Users = {
@@ -92,7 +94,7 @@ userRouter.patch('/', authorizationMiddleWare(['Admin', 'User']), async (req:Req
 })
 
 
-
+//new user
 userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) => {
     // get input from the user
     let { firstName, lastName, username, password, birthday, phoneNumber, email, role} = req.body//a little old fashioned destructuring
