@@ -1,6 +1,8 @@
 create schema tattoobooking_booking_service; 
 set schema 'tattoobooking_booking_service';
 
+
+
 create table shops(
 	shop_id serial primary key,
 	shop_name text not null,
@@ -12,29 +14,35 @@ create table shops(
 	open_at time,
 	close_at time
 );
-reimbursement_status ->style
+
 create table styles(
 	style_id serial primary key,
 	style_name text not null
 );
-//reimbur_types -> shop_artists
+
 create table shop_artists(
 	shop int references shops ("shop_id"),
-	artist int references tattoobooking_user_service.users ("user_id")
+	artist int not null,
+	primary key (shop, artist)
 );
+
 create table artist_styles(
-	artist int references tattoobooking_user_service.users ("user_id"),
-	"style" int references styles ("style_id")
+	artist int not null,
+	"style" int references styles ("style_id"),
+	primary key (artist, "style")
 );
+
+
+
 create table bookings(
 	booking_id serial primary key,
-	customer int references tattoobooking_user_service.users("user_id"),
+	customer int not null,
 	"style" int references styles ("style_id"),
 	"size" text,
 	"location" text,
 	image text,
 	color BOOLEAN,
-	artist int references tattoobooking_user_service.users ("user_id"),
+	artist int not null,
 	shop int references shops ("shop_id"),
 	"date" date,
 	"time" time
