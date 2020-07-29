@@ -1,18 +1,16 @@
-
 //done updating class to bookingDTO DONE
 // after udpating class fields PENDING
-
 export class BookingDTO{
- 
-        reimbursement_id: number
-        author: number
-        amount: number
-        date_submitted: Date
-        date_resolved: Date
-        description: String
-        resolver: number
-        status: number
-        type: number
-    
+        booking_id: number
+        customer: number
+        style: number
+        size: string
+        location: string
+        imageTest: string
+        color: boolean
+        artist: number
+        shop: number
+        date: number
+        time: number    
 }
 

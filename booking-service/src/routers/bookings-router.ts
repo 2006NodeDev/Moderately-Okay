@@ -1,5 +1,5 @@
 import express, {Request, Response, NextFunction} from 'express'
-import { getAllBookings, findBookingtByStatusId, findBookingByUser, submitNewBooking, updateExistingBooking } from '../daos/SQL/reim-dao';
+import { getAllBookings, findBookingtByStyleId, findBookingByUser, submitNewBooking, updateExistingBooking } from '../daos/SQL/booking-dao';
 import { InvalidIdError } from '../errors/InvalidIdError';
 import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { Bookings } from '../models/Bookings';
@@ -23,31 +23,26 @@ bookingRouter.get('/', authorizationMiddleWare(['Finance Manager']),async (req:R
     }
     
 })
-
-
+//DONE
 bookingRouter.get('/status/:status_id', authorizationMiddleWare(['Finance Manager']), async(req:Request, res:Response, next:NextFunction)=>{
-    let {status_id} = req.params
-    if(isNaN(+status_id)){
+    let {style_id} = req.params
+    if(isNaN(+style_id)){
         throw new InvalidIdError()
     }else{
        try {
-            let bookingByStatusId = await findBookingtByStatusId(+status_id)
-            res.json(bookingByStatusId)
+            let bookingByStyleId = await findBookingtByStyleId(+style_id)
+            res.json(bookingByStyleId)
        } catch (error) {
            next(error)
        }
     }     
 })
-
 //updates function name, exports, calls, and variables DONE
 // Updated booking fields per db PENDING
-
 bookingRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Manager', 'User']), async(req:Request, res:Response, next:NextFunction)=>{
     let {user_id} = req.params
-
     if(isNaN(+user_id)){
         throw new InvalidIdError()
-
     } else if(req.session.user.user_id !== +user_id && req.session.user.role === "User"){
         next(new AuthenticationFailure())
     }else {
@@ -59,33 +54,48 @@ bookingRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance M
        }
     }
 })
-
 // Submit a reimbursment
-
 bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
     
     let{
-        amount,
-        description,
-        type
+        style,
+        size,
+        location,
+        imageTest,
+            color,
+            artist,
+            shop,
+            date,
+            time,
     } = req.body
 
-    let author = req.session.user.user_id;
+    let customer = req.session.user.user_id;
     //console.log(author)
-
-    if( !author || !amount || !description  || !type){
+    if( !customer || !style || !size  || !location){
         next(new BookingInputError())
     }else{
         let newBooking: Bookings ={
-            reimbursement_id: 0,
-            author,
-            amount,
-            date_submitted: new Date(),
-            date_resolved: null ,
-            description,
-            resolver:null,
-            status:3,
-            type,
+            bookingId: 0,
+            customer,
+            style,
+            size,
+            location,
+            imageTest,
+            color,
+            artist,
+            shop,
+            date,
+            // 
+            time
+           // reimbursement_id: 0,
+            //author,
+            //amount,
+            //date_submitted: new Date(),
+            //date_resolved: null ,
+           // description,
+            //resolver:null,
+            //status:3,
+            //type,
         }
         try {
             let submitBooking = await submitNewBooking(newBooking)
@@ -102,35 +112,51 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
 // Updated booking fields per db PENDING
 bookingRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (req:Request, res:Response, next:NextFunction)=>{
     let{
+        bookingId,
+        customer,
+        style,
+        size,
+        location,
+        imageTest,
+        color,
+        shop,
+        date,
+        time
+        /*
         reimbursement_id,
         author,
         amount,
         description,
         status,
         type
+        */
     } = req.body
 
-    if(!reimbursement_id || isNaN(reimbursement_id)){
-        next (new InvalidIdError());
-    }
-    
+    if(!bookingId || isNaN(bookingId)){
+        next (new InvalidIdError());    }
         let updatedBooking:Bookings ={
-            reimbursement_id,
-            author,
-            amount,
-            date_submitted: new Date(),
-            date_resolved: new Date(),
-            description,
-            resolver: req.session.user.user_id,
-            status,
-            type
-        }
-        updatedBooking.author = author 
-        updatedBooking.amount = amount 
-        updatedBooking.description = description 
-        updatedBooking.status = status 
-        updatedBooking.type = type 
+            bookingId,
+            customer,
+            style,
+            size,
+            location,
+            imageTest,
+            color,
+            artist: req.session.user.user_id,
+            shop,
+            date,
+            time
 
+        }
+        updatedBooking.customer = customer 
+        updatedBooking.style = style 
+        updatedBooking.size = size 
+        updatedBooking.location = location 
+        updatedBooking.imageTest = imageTest 
+        updatedBooking.color = color 
+        updatedBooking.shop = shop 
+        updatedBooking.date = date 
+        updatedBooking.time = time 
         try {
             let updatedBookingResults = await updateExistingBooking(updatedBooking)
             res.json(updatedBookingResults)
@@ -138,4 +164,3 @@ bookingRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (re
             next(error)
         }
  })
-
