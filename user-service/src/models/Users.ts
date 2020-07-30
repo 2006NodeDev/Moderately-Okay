@@ -11,4 +11,5 @@ export class Users{
 	phoneNumber: string
 	email: string //not null
 	role: Role
+    image: any
 }

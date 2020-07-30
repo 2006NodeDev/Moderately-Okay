@@ -1,11 +1,12 @@
 import express, {Request, Response, NextFunction} from 'express'
-import { getAllBookings, findBookingtByStyleId, findBookingByUser, submitNewBooking, updateExistingBooking } from '../daos/SQL/booking-dao';
+
 import { InvalidIdError } from '../errors/InvalidIdError';
 import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
 import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
 import { AuthenticationFailure } from '../errors/AuthenticationFailure';
+import { getAllBookingsService, findBookingByUserService } from '../services/booking-service';
 
 //updateBooking
 
@@ -16,27 +17,14 @@ bookingRouter.use(authenticationMiddleware)
 //updated this func to reflect booking DONE
 bookingRouter.get('/', authorizationMiddleWare(['Finance Manager']),async (req:Request, res:Response, next:NextFunction)=>{
     try {
-        let booking = await getAllBookings()
+        let booking = await getAllBookingsService()
         res.json(booking)
     } catch (error) {
         next(error)
     }
     
 })
-//DONE
-bookingRouter.get('/status/:status_id', authorizationMiddleWare(['Finance Manager']), async(req:Request, res:Response, next:NextFunction)=>{
-    let {style_id} = req.params
-    if(isNaN(+style_id)){
-        throw new InvalidIdError()
-    }else{
-       try {
-            let bookingByStyleId = await findBookingtByStyleId(+style_id)
-            res.json(bookingByStyleId)
-       } catch (error) {
-           next(error)
-       }
-    }     
-})
+
 //updates function name, exports, calls, and variables DONE
 // Updated booking fields per db PENDING
 bookingRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Manager', 'User']), async(req:Request, res:Response, next:NextFunction)=>{
@@ -47,7 +35,7 @@ bookingRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance M
         next(new AuthenticationFailure())
     }else {
        try {
-            let bookByUserId = await findBookingByUser(+user_id)
+            let bookByUserId = await findBookingByUserService(+user_id)
             res.json(bookByUserId)
        } catch (error) {
            next(error)
@@ -98,7 +86,7 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             //type,
         }
         try {
-            let submitBooking = await submitNewBooking(newBooking)
+            let submitBooking = await 
             res.json(submitBooking)
         } catch (error) {
             next(error)

@@ -1,7 +1,7 @@
 import {Storage} from '@google-cloud/storage'
 
 // bucket name
-export const bucketName = 'uzungolcabins-imagebucket'
+export const bucketName = 'tattoo_shop_bucket'
 
 
 // http pat for the bucket and image /{}
