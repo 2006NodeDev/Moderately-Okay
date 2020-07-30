@@ -3,7 +3,7 @@ import { imageBucket } from ".";
 
 //fugure o
 
-export async function SaveProfilePicture(contentType:string, imageBase64Data:string, fileName:string){
+export async function SaveTattooimage(contentType:string, imageBase64Data:string, fileName:string){
     try{
 
         let newImage = imageBucket.file(fileName)// make a new file
