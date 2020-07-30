@@ -14,4 +14,3 @@ export const connectionPool: Pool = new Pool({
     port: 5432,
     max: 5  // max number of connections 
 })
-
