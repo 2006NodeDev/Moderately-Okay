@@ -27,7 +27,7 @@ userRouter.get('/:id', authorizationMiddleWare(['admin' ,'customer', 'artist']),
     let {id} = req.params
     if(isNaN(+id)){
         res.status(400).send('Id must be a number')
-    }else if(req.session.user.user_id !== +id && req.session.user.role === "customer" && req.session.user.role === "artist"){
+    }else if(req.session.user.userId !== +id && req.session.user.role === "customer" && req.session.user.role === "artist"){
         next(new AuthenticationFailure())
     }
     else {
@@ -45,40 +45,40 @@ userRouter.get('/:id', authorizationMiddleWare(['admin' ,'customer', 'artist']),
 userRouter.patch('/', authorizationMiddleWare(['admin', 'customer', 'artist']), async (req:Request, res:Response, next:NextFunction)=>{
     
         let{
-        user_id,
+        userId,
         username,
         password,
-        first_name,
-        last_name,
+        firstName,
+        lastName,
         birthday,
-        phone_number,
+        phoneNumber,
         email,
         role,
         } = req.body
 
-        if(!user_id || isNaN(req.body.user_id)){
+        if(!userId || isNaN(req.body.userId)){
             next(new InvalidIdError())
             
-        }else if(req.session.user.user_id !== +user_id  && req.session.user.role === "customer" || req.session.user.role === "artist"){
+        }else if(req.session.user.userId !== +userId  && req.session.user.role === "customer" || req.session.user.role === "artist"){
             next(new AuthenticationFailure())
         }else { 
         let updatedUser: Users = {
-            user_id,
+            userId,
             username, 
             password, 
-            first_name,
-            last_name,
+            firstName,
+            lastName,
             birthday,
-            phone_number,
+            phoneNumber,
             email,
             role
         }
         updatedUser.username= username ||undefined
         updatedUser.password = password || undefined
-        updatedUser.first_name = first_name || undefined
-        updatedUser.last_name = last_name || undefined
+        updatedUser.firstName = firstName || undefined
+        updatedUser.lastName = lastName || undefined
         updatedUser.birthday = birthday || undefined
-        updatedUser.phone_number = phone_number || undefined
+        updatedUser.phoneNumber = phoneNumber || undefined
         updatedUser.email = email || undefined
         updatedUser.role = role || undefined
 
@@ -97,21 +97,21 @@ userRouter.patch('/', authorizationMiddleWare(['admin', 'customer', 'artist']), 
 //new user
 userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) => {
     // get input from the user
-    let { first_name, last_name, username, password, birthday, phone_number, email, role} = req.body//a little old fashioned destructuring
+    let { firstName, lastName, username, password, birthday, phoneNumber, email, role} = req.body//a little old fashioned destructuring
     //verify that input
-    if (!first_name || !last_name || !username || !password || !birthday || !email || !phone_number ) {
+    if (!firstName || !lastName || !username || !password || !birthday || !email || !phoneNumber ) {
         next(new UserMissingInputError)
     } else {
         //try  with a function call to the dao layer to try and save the user
         let newUser: Users = {
-            first_name,
-            last_name,
+            firstName,
+            lastName,
             username,
             password,
             birthday,
-            phone_number,
+            phoneNumber,
             role,
-            user_id:0,
+            userId:0,
             email
         }
         try {
