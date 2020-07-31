@@ -5,6 +5,7 @@ import { BookingNotFound } from "../../errors/BookingNotFoundErrors";
 import { Bookings } from "../../models/Bookings";
 import { BookingInputError } from "../../errors/BookingInputError";
 
+const schema = process.env['LB_SCHEMA'] || 'tattoobooking_booking_service'
 //updated getAllBooking func for booking DONE
 //update DB QUERY DONE
 //Promise is representation of a future value of an error
@@ -12,7 +13,7 @@ export async function getAllBookings():Promise<Bookings[]>{
     let client: PoolClient;
     try {
         client = await connectionPool.connect()
-        let getAllBookingResults:QueryResult = await client.query(`select * from tattoobooking_booking_services.bookings b
+        let getAllBookingResults:QueryResult = await client.query(`select * ${schema}.bookings b
         order by b.date;`)
         if(getAllBookingResults.rowCount ===0){
             throw new BookingNotFound();
@@ -49,7 +50,7 @@ export async function findBookingtByStyleId(styleId:number):Promise<Bookings>{
         bs.style_name, 
         ba.artist, 
         rt.style 
-        from tattoobooking_booking_services.bookings r
+        ${schema}.bookings r
         left join tattoobooking_booking_services.styles rt on r."style" = rt.style
         left join tattoobooking_booking_services.artist_styles rs on r.status = rs.status_id
         left join tattoobooking_booking_services.bookings u1 on r.customer = u1.user_id
@@ -90,7 +91,7 @@ export async function findBookingByUser(userId:number):Promise<Bookings>{
         bs.status_id, 
         bsa.shop, 
         bsa.style 
-        from tattoobooking_booking_services.bookings r
+        ${schema}.bookings r
         left join tattoobooking_booking_services.styles rs on r."type" = rt.type_id
         left join tattoobooking_booking_services.reimbursement_status rs on r.status = rs.status_id ???
         left join tattoobooking_booking_services.bookings u1 on r.customer = u1.user_id
@@ -140,8 +141,8 @@ export async function submitNewBooking(newBooking: Bookings):Promise<Bookings>{
     try {
         client = await connectionPool.connect()
         await client.query('BEGIN;')
-        //let typeId = await client.query(`select rt.type_id from tattoobooking_booking_services.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
-        let bookTattoostyle = await client.query(`select bs.style_id from tattoobooking_booking_services.styles bs where bs."style" = $1;`, [newBooking.style])
+        //let typeId = await client.query(`select rt.type_id ${schema}.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
+        let bookTattoostyle = await client.query(`select bs.style_id ${schema}.styles bs where bs."style" = $1;`, [newBooking.style])
         //UPDATE TYPE
         if(bookTattoostyle.rowCount === 0){
             throw new Error('Type not found')
@@ -170,8 +171,8 @@ let client: PoolClient
     try {
         client = await connectionPool.connect()
         await client.query('BEGIN;')
-        //let typeId = await client.query(`select rt.type_id from tattoobooking_booking_services.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
-        let typeId = await client.query(`select rt.type_id from tattoobooking_booking_services.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
+        //let typeId = await client.query(`select rt.type_id ${schema}.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
+        let typeId = await client.query(`select rt.type_id ${schema}.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
         //UPDATE TYPE
         if(typeId.rowCount === 0){
             throw new Error('Type not found')
@@ -219,7 +220,7 @@ export async function updateExistingBooking(updateBooking:Bookings): Promise <Bo
             await client.query(`update tattoobooking_booking_services.bookings  set "color" = $1 where "booking_id" = $2;`, [updateBooking.color, updateBooking.bookingId])
         }
         if(updateBooking.style){
-            let style_id = await client.query(`select bs."style_id" from tattoobooking_booking_services.styles bs where bs."type" = $1;` , [updateBooking.style])
+            let style_id = await client.query(`select bs."style_id" ${schema}.styles bs where bs."type" = $1;` , [updateBooking.style])
             if(style_id.rowCount === 0 ){
                 throw new Error("Type Not Found")
             }
@@ -310,7 +311,7 @@ export async function findBookingById(id:number):Promise<Bookings>{
     let client: PoolClient;
     try {
         client = await connectionPool.connect()
-        let getBookingById:QueryResult = await client.query(`select * from tattoobooking_booking_services.bookings b 
+        let getBookingById:QueryResult = await client.query(`select * ${schema}.bookings b 
         left join tattoobooking_booking_services.users u on r.customer = u.user_id  ???
         left join tattoobooking_booking_services.reimbursement_type bs on bs.style_id = b."style"  
         where b.bookings_id = $1 order by b.date;`, [id])
