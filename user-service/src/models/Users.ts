@@ -2,14 +2,13 @@ import { Role } from "./Roles"
 
 //updated to reflect proj2
 export class Users{
-  	userId: number 
+  	user_id: number 
 	username: string //not null unique
 	password: string //not null
-	firstName: string //not null
-	lastName: string //not null
+	first_name: string //not null
+	last_name: string //not null
 	birthday: Date //not null
-	phoneNumber: string
+	phone_number: string
 	email: string //not null
 	role: Role
-    image: any
 }

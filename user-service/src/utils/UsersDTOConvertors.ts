@@ -5,13 +5,13 @@ import { Users } from "../models/Users";
 //updated for proj2
 export function UsersDTOtoUsersConvertor(udto:UsersDTO) : Users{
     return{
-        userId: udto.user_id,
+        user_id: udto.user_id,
         username: udto.username,
         password: udto.password,
-        firstName: udto.first_name,
-        lastName: udto.last_name,
+        first_name: udto.first_name,
+        last_name: udto.last_name,
         birthday: udto.birthday,
-        phoneNumber: udto.phone_number,
+        phone_number: udto.phone_number,
         email: udto.email,
         role: udto.role,
 
