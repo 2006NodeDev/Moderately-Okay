@@ -6,7 +6,7 @@ import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
 import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
 import { AuthenticationFailure } from '../errors/AuthenticationFailure';
-import { getAllBookingsService, findBookingByUserService } from '../services/booking-service';
+import { getAllBookingsService, findBookingByUserService, UpdateExistingBookingService, SubmitNewBookingService } from '../services/booking-service';
 
 //updateBooking
 
@@ -42,7 +42,7 @@ bookingRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance M
        }
     }
 })
-// Submit a reimbursment
+// Submit new booking
 bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
     
     let{
@@ -86,8 +86,8 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             //type,
         }
         try {
-            let submitBooking = await 
-            res.json(submitBooking)
+            let submitBookingRes = await SubmitNewBookingService(newBooking)
+            res.json(submitBookingRes)
         } catch (error) {
             next(error)
         }  
@@ -146,7 +146,7 @@ bookingRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (re
         updatedBooking.date = date 
         updatedBooking.time = time 
         try {
-            let updatedBookingResults = await updateExistingBooking(updatedBooking)
+            let updatedBookingResults = await UpdateExistingBookingService(updatedBooking)
             res.json(updatedBookingResults)
         } catch (error) {
             next(error)
