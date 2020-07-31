@@ -1,12 +1,11 @@
 import express, {Request, Response, NextFunction} from 'express'
-
+import { getAllBookings, findBookingByUser, submitNewBooking, updateExistingBooking } from '../daos/SQL/booking-dao';
 import { InvalidIdError } from '../errors/InvalidIdError';
 import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
 import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
 import { AuthenticationFailure } from '../errors/AuthenticationFailure';
-import { getAllBookingsService, findBookingByUserService } from '../services/booking-service';
 
 //updateBooking
 
@@ -15,19 +14,18 @@ export let bookingRouter = express.Router();
 bookingRouter.use(authenticationMiddleware)
 
 //updated this func to reflect booking DONE
-bookingRouter.get('/', authorizationMiddleWare(['Finance Manager']),async (req:Request, res:Response, next:NextFunction)=>{
+bookingRouter.get('/', authorizationMiddleWare(['admin']),async (req:Request, res:Response, next:NextFunction)=>{
     try {
-        let booking = await getAllBookingsService()
+        let booking = await getAllBookings()
         res.json(booking)
     } catch (error) {
         next(error)
     }
     
 })
-
 //updates function name, exports, calls, and variables DONE
 // Updated booking fields per db PENDING
-bookingRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance Manager', 'User']), async(req:Request, res:Response, next:NextFunction)=>{
+bookingRouter.get('/bookingId/:booking_id', authorizationMiddleWare(['artist', 'customer']), async(req:Request, res:Response, next:NextFunction)=>{
     let {user_id} = req.params
     if(isNaN(+user_id)){
         throw new InvalidIdError()
@@ -35,7 +33,7 @@ bookingRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance M
         next(new AuthenticationFailure())
     }else {
        try {
-            let bookByUserId = await findBookingByUserService(+user_id)
+            let bookByUserId = await findBookingByUser(+user_id)
             res.json(bookByUserId)
        } catch (error) {
            next(error)
@@ -86,7 +84,7 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             //type,
         }
         try {
-            let submitBooking = await 
+            let submitBooking = await submitNewBooking(newBooking)
             res.json(submitBooking)
         } catch (error) {
             next(error)
@@ -98,7 +96,7 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
 // Update Booking patch 
 //updates function name, exports, calls, and variables DONE
 // Updated booking fields per db PENDING
-bookingRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (req:Request, res:Response, next:NextFunction)=>{
+bookingRouter.patch('/', authorizationMiddleWare(['artist']), async (req:Request, res:Response, next:NextFunction)=>{
     let{
         bookingId,
         customer,
