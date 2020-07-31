@@ -1,4 +1,4 @@
-import { Role } from "./Roles";
+
 
 export interface User{
     userId: number
@@ -9,5 +9,5 @@ export interface User{
     birthday: string
     phoneNumber: string
     email: string
-    role: Role
+    role: string
 }

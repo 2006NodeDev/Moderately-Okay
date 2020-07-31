@@ -1,7 +1,8 @@
 import React, { FunctionComponent, SyntheticEvent, useState } from 'react'
 import { Button, TextField, Container, CssBaseline, Typography, Grid, withStyles, makeStyles } from '@material-ui/core'
-import {User} from '../models/User'
+import {User} from '../../models/User'
 import { useParams } from 'react-router'
+import { modOkayUpdateUser } from '../../remote/moderatelyokay-api/moderatelyokayupdateuser'
 
 //This is ripped off of my (Amanda) project 1, we can change the way it looks later
 
@@ -12,31 +13,17 @@ export const UpdateUserComponent: FunctionComponent<any> = (props) => {
     let {userId} = useParams()
     
     //still need to change this
-    let [firstName, changeFirstName] = useState("")
-    let [lastName, changeLastName] = useState("")
     let [username, changeUsername] = useState("")
     let [password, changePassword] = useState("")
+    let [firstName, changeFirstName] = useState("")
+    let [lastName, changeLastName] = useState("")
+    let [birthday, changeBirthday] = useState("")
+    let [phoneNumber, changePhoneNumber] = useState("")
     let [email, changeEmail] = useState("")
-    let [image, changeImage] = useState(undefined)
 
 
 
-    const updateFirstName = (e:any) => {
-        e.preventDefault()
-        if (e.currentTarget.value !== undefined){
-        changeFirstName(e.currentTarget.value)
-        } else{
-          changeFirstName(e.currentTarget.firstName)
-        }
-    }
-    const updateLastName = (e:any) => {
-        e.preventDefault()
-        if (e.currentTarget.value !== undefined){
-        changeLastName(e.currentTarget.value)
-        } else{
-          changeLastName(e.currentTarget.lastName)
-        } 
-    }
+    //and still need to change these
     const updateUsername = (e:any) => {
         e.preventDefault()
         if (e.currentTarget.value !== undefined){
@@ -53,6 +40,39 @@ export const UpdateUserComponent: FunctionComponent<any> = (props) => {
           changePassword(e.currentTarget.password)
         }
     }
+    const updateFirstName = (e:any) => {
+      e.preventDefault()
+      if (e.currentTarget.value !== undefined){
+      changeFirstName(e.currentTarget.value)
+      } else{
+        changeFirstName(e.currentTarget.firstName)
+      }
+  }
+  const updateLastName = (e:any) => {
+      e.preventDefault()
+      if (e.currentTarget.value !== undefined){
+      changeLastName(e.currentTarget.value)
+      } else{
+        changeLastName(e.currentTarget.lastName)
+      } 
+  }
+
+const updateBirthday = (e:any) => {
+    e.preventDefault()
+    if (e.currentTarget.value !== undefined){
+    changeBirthday(e.currentTarget.value)
+    } else{
+      changeBirthday(e.currentTarget.birthday)
+    } 
+}
+const updatePhoneNumber = (e:any) => {
+  e.preventDefault()
+  if (e.currentTarget.value !== undefined){
+  changePhoneNumber(e.currentTarget.value)
+  } else{
+    changePhoneNumber(e.currentTarget.phoneNumber)
+  }
+}
     const updateEmail = (e:any) => {
         e.preventDefault()
         if (e.currentTarget.value !== undefined){
@@ -62,18 +82,8 @@ export const UpdateUserComponent: FunctionComponent<any> = (props) => {
         }
     }
 
-    const updateImage = (e:any) => {
-        let file:File = e.currentTarget.files[0]
-        let reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-            console.log(reader.result)
-            changeImage(reader.result) //why isn't this working all of a sudden? it worked on my project 1
-        }
-    }
 
-
-
+    //gotta change this too
     const updateUser = async (e: SyntheticEvent) => {
         e.preventDefault()
             let updatedUser:User = {
@@ -82,11 +92,13 @@ export const UpdateUserComponent: FunctionComponent<any> = (props) => {
                 password,
                 firstName,
                 lastName,
+                birthday,
+                phoneNumber,
                 email,
                 role: '',
-                image
+
             }
-            let res = await dndcharactertrackerUpdateUser(updatedUser)  //change all references to dnd
+            let res = await modOkayUpdateUser(updatedUser)  //change all references to dnd
     }
 
 //we don't have to use this format
@@ -156,11 +168,6 @@ export const UpdateUserComponent: FunctionComponent<any> = (props) => {
                   value={lastName}
                   onChange={updateLastName}
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <label htmlFor="file">Change Profile Picture</label> <br/>
-                <input type="file" name="file" accept="image/*" onChange={updateImage} />
-                <img src={image} width="100%"/>
               </Grid>
               <Grid item xs={12}>
                 <CustomButton
