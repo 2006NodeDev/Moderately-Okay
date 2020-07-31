@@ -6,10 +6,6 @@ import { corsFilter } from './middlewares/cors-filter';
 import {userRouter} from './routers/user-router';
 import {InvalidCredentialsError} from  './errors/InvalidCredentialsError';
 
-
-
-
-
 const app = express();
 
 app.use(express.json({limit:'50mb'}))
