@@ -99,7 +99,7 @@ userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) =>
     // get input from the user
     let { firstName, lastName, username, password, birthday, phoneNumber, email, role} = req.body//a little old fashioned destructuring
     //verify that input
-    if (!firstName || !lastName || !username || !password || !birthday || !email || !phoneNumber ) {
+    if (!firstName || !lastName || !username || !password || !role) {
         next(new UserMissingInputError)
     } else {
         //try  with a function call to the dao layer to try and save the user
@@ -114,6 +114,10 @@ userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) =>
             userId:0,
             email
         }
+        newUser.email = email || null
+        newUser.birthday = birthday || null
+        newUser.phoneNumber = phoneNumber || null
+       
         try {
             let savedUser = await SubmitNewUserService(newUser)
             res.json(savedUser)// needs to have the updated userId

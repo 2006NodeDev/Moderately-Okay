@@ -4,7 +4,6 @@ import { Users } from "../../models/Users";
 import { UsersDTOtoUsersConvertor } from "../../utils/UsersDTOConvertors";
 import { AuthFailureError } from "../../errors/AuthFailureError";
 import { UserNotFound } from "../../errors/UserNotFoundError";
-import { UserMissingInputError } from "../../errors/UserMissingInputError";
 
 const schema = process.env['LB_SCHEMA'] || 'tattoobooking_user_service'
 
@@ -145,19 +144,19 @@ export async function submitNewUser(newUser: Users):Promise<Users>{
         client = await connectionPool.connect()
         await client.query('BEGIN;')
 
-        let roleId = await client.query(`select r.role_id from ${schema}.roles r where r."role" = $1;`, [newUser.role])
+        let roleId = await client.query(`select r.role_id from tattoobooking_user_service.roles r where r."role" = $1;`, [newUser.role])
             if(roleId.rowCount === 0){
                 throw new Error('Role not found')
             } 
 
             roleId = roleId.rows[0].roleId
             
-        let newuserinfo = await client.query(`insert into ${schema}.users("username", 
+        let newuserinfo = await client.query(`insert into tattoobooking_user_service.users("username", 
             "password",
             "first_name",
             "last_name",
             "email", "birthday", "phone_number", "role") values ($1, $2, $3, $4, $5, $6, $7, $8) returning "user_id" `, 
-            [newUser.username, newUser.password, newUser.firstName, newUser.lastName, newUser.email, newUser.phoneNumber, newUser.birthday, roleId])
+            [newUser.username, newUser.password, newUser.firstName, newUser.lastName, newUser.email, newUser.birthday, newUser.phoneNumber, roleId])
             newUser.userId = (await newuserinfo).rows[0].userId
             await client.query('COMMIT;')
             return newUser
@@ -165,7 +164,7 @@ export async function submitNewUser(newUser: Users):Promise<Users>{
     } catch (error) {
         client && client.query('ROLLBACK;')
         if(error.message === 'Role not found') {
-            throw new UserMissingInputError();
+            throw new Error('something went wrong')
         }
         console.log(error)
         throw new Error('un implemented error handling')
