@@ -8,8 +8,7 @@ import Button from '@material-ui/core/Button'
 //import FormControl from '@material-ui/core/FormControl';
 //import Select from '@material-ui/core/Select';
 import { modokaysignup } from '../../remote/moderatelyokay-api/moderatelyokaysignup'
-import { Users } from '../../models/Users'
-import {KeyboardDatePicker} from '@material-ui/pickers'
+import { User } from '../../models/User'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,7 +73,7 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
     e.preventDefault()
     changePassword('')
 
-    let newUser: Users = {
+    let newUser: User = {
       username,
       password,
       firstName,
@@ -100,18 +99,7 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
         <TextField id="outlined-basic" label="First Name" variant="outlined" value={firstName} onChange={updateFirstname} /><br /><br />
         <TextField id="outlined-basic" label="Last Name" variant="outlined" value={lastName} onChange={updateLastname} /><br /><br />
         <TextField id="outlined-basic" label="Email" variant="outlined" value={email} onChange={updateEmail} /><br /><br />
-        <KeyboardDatePicker
-          margin="normal"
-          id="date-picker-dialog"
-          label="Birthday"
-          format="MM/dd/yyyy"
-          value={birthday}
-          onChange={changeBirthday}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-        />
-        //<TextField id="outlined-basic" label="Birthday" variant="outlined" value={birthday} onChange={updateBirthday} /><br /><br />
+        <TextField id="outlined-basic" label="Birthday" variant="outlined" value={birthday} onChange={updateBirthday} /><br /><br />
         <TextField id="outlined-basic" label="Phone Number" variant="outlined" value={phoneNumber} onChange={updatePhoneNumber} /><br /><br />
         <Button type="submit" variant="outlined" color="primary" href="#outlined-buttons">Sign Up</Button>
       </form>

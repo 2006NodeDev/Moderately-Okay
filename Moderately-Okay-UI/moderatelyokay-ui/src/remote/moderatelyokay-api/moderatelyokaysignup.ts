@@ -1,6 +1,6 @@
 import {modokayClient} from '.'
-import {Users} from '../../models/Users'
-export const modokaysignup = async (newUser:Users) => {
+import {User} from '../../models/User'
+export const modokaysignup = async (newUser:User) => {
  
     try{
         let response = await modokayClient.post('/signup', newUser)
