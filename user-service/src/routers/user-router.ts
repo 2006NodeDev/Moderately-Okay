@@ -11,9 +11,6 @@ import { UserMissingInputError } from '../errors/UserMissingInputError';
 export let userRouter = express.Router();
 
 
-
-
-
 //new user
 userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) => {
     // get input from the user
@@ -46,7 +43,6 @@ userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) =>
         }
     }
 })
-
 
 userRouter.use(authenticationMiddleware)
 
@@ -130,40 +126,3 @@ userRouter.patch('/', authorizationMiddleWare(['admin', 'customer', 'artist']), 
         }
     }
 })
-
-
-//new user
-userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) => {
-    // get input from the user
-    let { firstName, lastName, username, password, birthday, phoneNumber, email, role} = req.body//a little old fashioned destructuring
-    //verify that input
-    if (!firstName || !lastName || !username || !password || !role) {
-        next(new UserMissingInputError)
-    } else {
-        //try  with a function call to the dao layer to try and save the user
-        let newUser: Users = {
-            firstName,
-            lastName,
-            username,
-            password,
-            birthday,
-            phoneNumber,
-            role,
-            userId:0,
-            email
-        }
-        newUser.email = email || null
-        newUser.birthday = birthday || null
-        newUser.phoneNumber = phoneNumber || null
-       
-        try {
-            let savedUser = await SubmitNewUserService(newUser)
-            res.json(savedUser)// needs to have the updated userId
-        } catch (e) {
-            next(e)
-        }
-    }
-})
-
-
-
