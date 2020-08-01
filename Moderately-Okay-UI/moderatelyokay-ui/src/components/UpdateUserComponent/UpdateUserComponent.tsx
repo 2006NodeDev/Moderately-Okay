@@ -1,6 +1,6 @@
 import React, { FunctionComponent, SyntheticEvent, useState } from 'react'
 import { Button, TextField, Container, CssBaseline, Typography, Grid, withStyles, makeStyles } from '@material-ui/core'
-import {User} from '../../models/User'
+import {Users} from '../../models/Users'
 import { useParams } from 'react-router'
 import { modOkayUpdateUser } from '../../remote/moderatelyokay-api/moderatelyokayupdateuser'
 
@@ -86,13 +86,13 @@ const updatePhoneNumber = (e:any) => {
     //gotta change this too
     const updateUser = async (e: SyntheticEvent) => {
         e.preventDefault()
-            let updatedUser:User = {
+            let updatedUser:Users = {
                 userId: userId,
                 username,
                 password,
                 firstName,
                 lastName,
-                birthday,
+                birthday: new Date,
                 phoneNumber,
                 email,
                 role: '',

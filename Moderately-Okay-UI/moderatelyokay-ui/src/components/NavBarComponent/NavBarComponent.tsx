@@ -7,9 +7,10 @@ import IconButton from '@material-ui/core/IconButton'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-//import MenuIcon from '@material-ui/core/Menu'
-import {Link} from 'react-router-dom'
+import MenuIcon from '@material-ui/icons/Menu'
+import { Link } from 'react-router-dom'
 //JSS 
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -27,40 +28,47 @@ const useStyles = makeStyles((theme: Theme) =>
       fontFamily: 'monospace',
       fontSize: 18
     },
-    Menu:{
-      color:'#FEDBC4'
+    Menu: {
+      color: '#FEDBC4'
     },
-    AppBar:{
-      color:'#001131'
+    AppBar: {
+      color: '#001131'
     }
   }),
 );
 
-export const NavBarComponent:FunctionComponent<any> = (props) =>{
-    const classes = useStyles();
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+export const NavBarComponent: FunctionComponent<any> = (props) => {
+  const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);};
-    const handleClose = () => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
     setAnchorEl(null);
-    }
-    return(
+  }
+
+  let menuItems = []
+  menuItems.push(<MenuItem onClick={handleClose}><Link to='/login'>Login</Link></MenuItem>)
+  menuItems.push(<MenuItem onClick={handleClose}><Link to='/signup'>Sign Up</Link></MenuItem>)
+  if (props.user) {
+    menuItems.push(<MenuItem onClick={handleClose}><Link to={`/profile/${(props.user) ? props.user.userId : '0'}`}>My Profile</Link></MenuItem>)
+  }
+
+  return (
     <nav>
-        <AppBar position="static">
+      <AppBar position="static">
         <Toolbar>
           <IconButton onClick={handleClick} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-         
-          </IconButton> 
-          <Menu id="simple-menu" 
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}>
-                    <MenuItem onClick={handleClose}><Link to = '/home'>Home</Link></MenuItem>
-                    <MenuItem onClick={handleClose}><Link to = '/'>My Profile</Link></MenuItem>
-                    <MenuItem onClick={handleClose}><Link to = '/social'>Social</Link></MenuItem>
-            </Menu>
+           <MenuIcon/>
+          </IconButton>
+          <Menu id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}>
+            {menuItems}
+          </Menu>
           <Typography variant="h6" className={classes.title}>
             Moderately Okay
           </Typography>
@@ -68,6 +76,6 @@ export const NavBarComponent:FunctionComponent<any> = (props) =>{
         </Toolbar>
       </AppBar>
     </nav>
-      
-    )
+
+  )
 }

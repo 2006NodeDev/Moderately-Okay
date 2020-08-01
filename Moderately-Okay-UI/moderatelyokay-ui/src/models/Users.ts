@@ -1,12 +1,12 @@
 
 
-export interface User{
+export interface Users{
     userId: number
     username: string
     password: string
     firstName: string
     lastName: string
-    birthday: string
+    birthday: Date
     phoneNumber: string
     email: string
     role: string
