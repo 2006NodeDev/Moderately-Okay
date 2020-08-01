@@ -1,9 +1,9 @@
 import { modokayClient} from ".";
-import { Users } from "../../models/Users"
+import { User } from "../../models/User"
 
 
 
-export const modOkayUpdateUser = async (updatedUser:Users) =>{
+export const modOkayUpdateUser = async (updatedUser:User) =>{
     try{
         console.log(updatedUser);
         let response = await modokayClient.patch('/users', updatedUser)
