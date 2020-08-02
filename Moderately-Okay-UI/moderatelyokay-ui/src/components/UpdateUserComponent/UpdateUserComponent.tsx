@@ -178,7 +178,7 @@ export const UpdateUserComponent: FunctionComponent<any> = (props) => {
                 variant="filled"
                 fullWidth
                 id="phoneNumber"
-                label="Change Last Name"
+                label="Change Phone Number"
                 name="phoneNumber"
                 value={phoneNumber}
                 onChange={updatePhoneNumber}

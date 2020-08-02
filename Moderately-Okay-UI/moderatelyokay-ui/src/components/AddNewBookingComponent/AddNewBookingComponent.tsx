@@ -16,7 +16,6 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
     let [artist, changeArtist] = useState(0)
     let [shop, changeShop] = useState(0)
     let [date, changeDate] = useState(0)
-    let [time, changeTime] = useState(0)
 
 
     const updateCustomer = (e:any) => {
@@ -55,12 +54,6 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
         e.preventDefault()
         changeDate(e.currentTarget.value)
     }
-    const updateTime = (e:any) => {
-        e.preventDefault()
-        changeTime(e.currentTarget.value)
-    }
-
-
 
     const submitBooking = async (e: SyntheticEvent) => {
             let newBooking:Bookings = {
@@ -73,8 +66,7 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
                 color,
                 artist,
                 shop,
-                date,
-                time
+                date
             }
     
             let res = await addNewBooking(newBooking)
@@ -96,7 +88,6 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
                 <TextField id="standard-basic" label="Artist" value={artist} onChange={updateArtist}/>
                 <TextField id="standard-basic" label="Shop" value={shop || 0} onChange={updateShop}/>
                 <TextField id="standard-basic" label="Date" value={date || 0} onChange={updateDate}/>
-                <TextField id="standard-basic" label="Time" value={time || 0} onChange={updateTime}/>
                 <Button variant="contained" type='submit'>Submit</Button>
             </form>
         </div>
