@@ -6,17 +6,19 @@ import { Bookings } from "../models/Bookings";
 //update fields per db fields
 //updated model name to bookings DONE
 
-export function BookingDTOtoBookingConvertor(rdto:BookingDTO) : Bookings{
+export function BookingDTOtoBookingConvertor(bdto:BookingDTO) : Bookings{
     return {
-        reimbursement_id: rdto.reimbursement_id,
-        author: rdto.author,
-        amount: rdto.amount,
-        date_submitted: new Date(rdto.date_submitted),
-        date_resolved: new Date(rdto.date_submitted),
-        description: rdto.description,
-        resolver: rdto.resolver,
-        status: rdto.status,
-        type: rdto.type
+        bookingId: bdto.booking_id,
+        customer: bdto.customer,
+        style: bdto.style,
+        size: bdto.size,
+        location: bdto.location,
+       // imageTest:bdto.imageTest,
+        color: bdto.color,
+        artist: bdto.artist,
+        shop: bdto.shop,
+        //date: bdto.date,
+        //time: bdto.time
     }
 
 }

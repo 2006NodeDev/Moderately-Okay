@@ -1,6 +1,8 @@
-import { getAllUsers, findUserById, submitNewUser, UpdateExistingUser } from "../daos/SQL/user-dao";
-import { Users } from "../models/Users";
-import { SaveProfilePicture } from "../daos/CloudStorage/booking-images";
+/*
+
+//import { getAllUsers, findUserById, submitNewUser, UpdateExistingUser } from "../daos/SQL/user-dao";
+//import { Users } from "../models/Users";
+//import { SaveProfilePicture } from "../daos/CloudStorage/booking-images";
 import { bucketBaseUrl } from "../daos/CloudStorage";
 import { Bookings } from "../models/Bookings";
 import { getAllBookings, findBookingByUser, updateExistingBooking } from "../daos/SQL/booking-dao";
@@ -38,3 +40,5 @@ export async function SubmitNewBookingService(newBooking:Bookings):Promise<Booki
 export async function UpdateExistingBookingService(booking:Bookings):Promise<Users>{
     return await updateExistingBooking(booking)
 }
+
+*/

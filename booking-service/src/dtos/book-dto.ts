@@ -6,11 +6,11 @@ export class BookingDTO{
         style: number
         size: string
         location: string
-        imageTest: string
+      //  imageTest: string
         color: boolean
         artist: number
         shop: number
-        date: number
-        time: number    
+        date: Date
+        time: string    
 }
 
