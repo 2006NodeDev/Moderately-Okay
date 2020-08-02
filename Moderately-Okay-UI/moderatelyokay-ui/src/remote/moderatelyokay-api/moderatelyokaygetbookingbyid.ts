@@ -2,7 +2,7 @@ import { modokayClient } from "."
 
 
 
-export const findUserByIdService = async (bookingId:number) =>{
+export const findBookingByIdService = async (bookingId:number) =>{
 
     try{
         let response = await modokayClient.get(`bookings/${bookingId}`)
