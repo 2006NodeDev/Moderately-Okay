@@ -5,6 +5,7 @@ import { BookingNotFound } from "../../errors/BookingNotFoundErrors";
 import { Bookings } from "../../models/Bookings";
 import { BookingInputError } from "../../errors/BookingInputError";
 
+
 //updated getAllBooking func for booking  -> DONE
 //update DB QUERY -> DONE
 //Promise is representation of a future value of an error
@@ -29,46 +30,17 @@ export async function getAllBookings():Promise<Bookings[]>{
     }
 }
 
-//UPDATED FUNC NAME, CALLS AND EXPORTS -> DONE
-//UPDATE QUERY PER DB - NEED HELP - CLARIFICATION ON THE USER PART -> DONE
-export async function findBookingByUser(userId:number):Promise<Bookings>{
+//It won't give me the customer information, but it does give me everything else. We will have to wait until we have something like jwt or kafka streams
+export async function findBookingByCustomer(userId:number):Promise<Bookings>{
     let client : PoolClient
     try {
         client = await connectionPool.connect()
-        let bookingByUserIdResult: QueryResult = await client.query(`select b.booking_id,
-        u1.user_id as customer, 
-        b.size, 
-        b.location, 
-        b.image, 
-        b.color, 
-        u2.user_id as artist,
-        b.style, 
-        s.style_id, 
-        b.shop, 
-        sh.shop_id,
-        b.date
+        let bookingByUserIdResult: QueryResult = await client.query(`select b.booking_id, u.first_name, u.last_name, 
+        u.user_id, b."style", b."size", b."location", b.image, b.color, b.artist, u.first_name, u.last_name, b.shop , b."date"
         from tattoobooking_booking_service.bookings b 
-        left join tattoobooking_user_services.users u1 on b.customer = u1.user_id
-        left join tattoobooking_booking_service.style s on b.style = s.style_id
-        left join tattoobooking_user_services.users u2 on b."artist" = u2.user_id
-        left join tattoobooking_booking_service.shop sh on b.shop = sh.shop_id
+        left join tattoobooking_user_service.users u 
+        on b.customer = u.user_id 
         where b.customer = $1 order by b.date;`, [userId])
-
-        
-/*
-b.customer = u.user_id
-b.artist = u.user_id
-
-`select * from tattoobooking_booking_service.bookings b 
-                left join tattoobooking_user_services.users u on b.customer = u.user_id
-                left join tattoobooking_booking_service.style s on b.style = s.style_id
-                left join tattoobooking_user_services.users u on b."artist" = u.user_id
-                left join tattoobooking_booking_service.shop sh on b.shop = sh.shop_id
-                where b.customer = ${id}
-                order by date;`
-
-*/
-
         if(bookingByUserIdResult.rowCount ===0){
             throw new Error('Booking Not Found')
         }else{
@@ -85,26 +57,7 @@ b.artist = u.user_id
         client && client.release()
     }
 }
-/*
-(`select r.booking_id,
-        u1.user_id as author, 
-        r.amount, 
-        r.date_submitted, 
-        r.date_resolved, 
-        r.description, 
-        u2.user_id as resolver, 
-        rs.status, 
-        rs.status_id, 
-        rt."type", 
-        rt.type_id 
-        from employee_data.reimbursements r
-        left join employee_data.reimbursement_type rt on r."type" = rt.type_id
-        left join employee_data.reimbursement_status rs on r.status = rs.status_id
-        left join employee_data.users u1 on r.author = u1.user_id
-        left join employee_data.users u2 on r.resolver = u2.user_id
-        where u1.user_id = $1 order by r.date_submitted;`, [userId])
 
-*/
 
 //UPDATED FUNC NAME, CALLS AND EXPORTS DONE
 //UPDATE QUERY PER DB PENDING DONE
