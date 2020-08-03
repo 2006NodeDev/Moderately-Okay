@@ -1,18 +1,19 @@
 import express, {Request, Response, NextFunction} from 'express'
-import { getAllBookings, findBookingByUser, submitNewBooking, updateExistingBooking } from '../daos/SQL/booking-dao';
 import { InvalidIdError } from '../errors/InvalidIdError';
-//import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { Bookings } from '../models/Bookings';
-import { BookingInputError } from '../errors/BookingInputError';
+//import { BookingInputError } from '../errors/BookingInputError';
 //import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
 //import { AuthenticationFailure } from '../errors/AuthenticationFailure';
-/*
-BASIC FUNCTIONALITIES:
-1.Submit Booking
-2.Update Booking
-3.Find Booking by ID
-4.Find All Bookings
-*/
+import { getAllBookingsService, UpdateExistingBookingService, findBookingByCustomerService } from '../services/booking-service';
+//import { authenticationMiddleware } from '../middlewares/authentication-middleware';
+
+
+//These need to have Authentication/Authorization.
+//We don't need people to look up bookings they're not a part of
+//Unless it's admin
+
+//updateBooking
+
 export let bookingRouter = express.Router();
 
 //bookingRouter.use(authenticationMiddleware)
@@ -22,7 +23,7 @@ export let bookingRouter = express.Router();
 bookingRouter.get('/',async (req:Request, res:Response, next:NextFunction)=>{
     //, authorizationMiddleWare(['admin'])
     try {
-        let booking = await getAllBookings()
+        let booking = await getAllBookingsService()
         res.json(booking)
     } catch (error) {
         next(error)
@@ -31,28 +32,23 @@ bookingRouter.get('/',async (req:Request, res:Response, next:NextFunction)=>{
 //updates function name, exports, calls, and variables DONE
 // Updated booking fields per db PENDING
 //NOT SURE HOW THIS MATCHES 
-bookingRouter.get('/bookings/bookingId/:booking_id', async(req:Request, res:Response, next:NextFunction)=>{
-    //, authorizationMiddleWare(['artist', 'customer']
-
-    let {user_id} = req.params
-    //COMMENTED THIS OUT BECAUSE IT'S CONNECTED TO THE USER SERVICE
-    //WILL NEED TO MAKE THE CONNECTION
-   if(isNaN(+user_id)){
+bookingRouter.get('/customer/:userId', /*authorizationMiddleWare(['admin', 'user']),*/ async(req:Request, res:Response, next:NextFunction)=>{
+    let {userId} = req.params
+   if(isNaN(+userId)){
         throw new InvalidIdError()
-    //} else if(req.session.user.user_id !== +user_id && req.session.user.role === "User"){
+    //} else if(req.session.user.userId !== +userId && req.session.user.role === "user"){
      //   next(new AuthenticationFailure())
      }else {
         try {
-            let bookByUserId = await findBookingByUser(+user_id)
-            res.json(bookByUserId)
+            let bookingByUserId = await findBookingByCustomerService(+userId)
+            res.json(bookingByUserId)
        } catch (error) {
            next(error)
        }
     }
-}
-    )
-// Submit a reimbursment
-bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
+})
+// Submit new booking
+/*bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
     
     let{
         style,
@@ -94,14 +90,14 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             //type,
         }
         try {
-            let submitBooking = await submitNewBooking(newBooking)
-            res.json(submitBooking)
+            let submitBookingRes = await SubmitNewBookingService(newBooking)
+            res.json(submitBookingRes)
         } catch (error) {
             next(error)
         }  
     }
     
-})
+})*/
 
 // Update Booking patch 
 //updates function name, exports, calls, and variables DONE
@@ -154,7 +150,7 @@ bookingRouter.patch('/', async (req:Request, res:Response, next:NextFunction)=>{
         updatedBooking.date = date 
         //updatedBooking.time = time 
         try {
-            let updatedBookingResults = await updateExistingBooking(updatedBooking)
+            let updatedBookingResults = await UpdateExistingBookingService(updatedBooking)
             res.json(updatedBookingResults)
         } catch (error) {
             next(error)

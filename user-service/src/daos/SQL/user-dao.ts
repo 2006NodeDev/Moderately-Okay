@@ -4,7 +4,6 @@ import { Users } from "../../models/Users";
 import { UsersDTOtoUsersConvertor } from "../../utils/UsersDTOConvertors";
 import { AuthFailureError } from "../../errors/AuthFailureError";
 import { UserNotFound } from "../../errors/UserNotFoundError";
-import { UserMissingInputError } from "../../errors/UserMissingInputError";
 
 const schema = process.env['LB_SCHEMA'] || 'tattoobooking_user_service'
 
@@ -19,7 +18,7 @@ export async function getAllUsers():Promise<Users[]>{
         u."password", u.first_name,
         u.last_name, u.birthday, u.phone_number, u.email,
         r."role" , r.role_id
-        from ${schema}.users u  left join ${schema}.roles r on u."role" = r.role_id;`)
+        from tattoobooking_user_service.users u  left join tattoobooking_user_service.roles r on u."role" = r.role_id;`)
         return getAllUsers.rows.map(UsersDTOtoUsersConvertor)
     } catch (error) {
         console.error();
@@ -40,7 +39,7 @@ export async function findUserById(id:number):Promise<Users>{
         u."password", u.first_name, 
         u.last_name, u.email, u.birthday, u.phone_number,
         r."role" , r.role_id
-        from ${schema}.users u  left join ${schema}.roles r on u."role" = r.role_id 
+        from tattoobooking_user_service.users u  left join tattoobooking_user_service.roles r on u."role" = r.role_id 
         where u.user_id = $1;`, [id])
         if(getUserById.rowCount === 0){
             throw new Error('User not found')
@@ -64,25 +63,11 @@ export async function getUserByusernameAndPassword(username, password):Promise<U
     let client:PoolClient;
     try {
         client = await connectionPool.connect()
-<<<<<<< HEAD
-        let getUserById:QueryResult = await client.query(`select u.user_id, u.username,  
+        let results:QueryResult = await client.query(`select u.user_id, u.username,  
         u."password", u.first_name, 
         u.last_name, u.email, u.birthday, u.phone_number,
         r."role" , r.role_id
         from tattoobooking_user_service.users u  left join tattoobooking_user_service.roles r on u."role" = r.role_id 
-=======
-        let results = await client.query(`select u.user_id, 
-                u.username,  
-                u."password", 
-                u.first_name, 
-                u.last_name, 
-                u.email, 
-                u.birthday, 
-                u.phone_number,
-                r."role",
-                r.role_id
-        from ${schema}.users u  left join ${schema}.roles r on u."role" = r.role_id 
->>>>>>> cc9cccc67b2c3ed77b2c037d527a83842a8db904
         where u.username = $1 and u.password = $2;`, [username, password])
         if(results.rowCount === 0){
             throw new Error('User not found')
@@ -109,63 +94,37 @@ export async function UpdateExistingUser(updatedUser:Users):Promise<Users>{
         client = await connectionPool.connect()
         await client.query('BEGIN;')
         if(updatedUser.username){
-<<<<<<< HEAD
-            await client.query('update tattoobooking_user_service.users set username = $1 where user_id = $2;', [updatedUser.username, updatedUser.user_id])
+            await client.query('update tattoobooking_user_service.users set username = $1 where user_id = $2;', [updatedUser.username, updatedUser.userId])
         }
         if(updatedUser.password){
-            await client.query('update tattoobooking_user_service.users set password = $1 where user_id = $2;', [updatedUser.password, updatedUser.user_id])
-        }
-        if(updatedUser.first_name){
-            await client.query('update tattoobooking_user_service.users set first_name = $1 where user_id = $2;', [updatedUser.first_name, updatedUser.user_id])
-        }
-        if(updatedUser.last_name){
-            await client.query('update tattoobooking_user_service.users set last_name= $1 where user_id = $2;', [updatedUser.last_name, updatedUser.user_id])
-        }
-        if(updatedUser.email){
-            await client.query('update tattoobooking_user_service.users set email = $1 where user_id = $2;', [updatedUser.email , updatedUser.user_id])
-        }
-        if(updatedUser.birthday){
-            await client.query('update tattoobooking_user_service.users set birthday = $1 where user_id = $2;', [updatedUser.birthday , updatedUser.user_id])
-        }
-        if(updatedUser.phone_number){
-            await client.query('update tattoobooking_user_service.users set phone_number = $1 where user_id = $2;', [updatedUser.phone_number , updatedUser.user_id])
-=======
-            await client.query(`update ${schema}.users set username = $1 where user_id = $2;`, [updatedUser.username, updatedUser.userId])
-        }
-        if(updatedUser.password){
-            await client.query(`update ${schema}.users set password = $1 where user_id = $2;`, [updatedUser.password, updatedUser.userId])
+            await client.query('update tattoobooking_user_service.users set password = $1 where user_id = $2;', [updatedUser.password, updatedUser.userId])
         }
         if(updatedUser.firstName){
-            await client.query(`update ${schema}.users set first_name = $1 where user_id = $2;`, [updatedUser.firstName, updatedUser.userId])
+            await client.query('update tattoobooking_user_service.users set first_name = $1 where user_id = $2;', [updatedUser.firstName, updatedUser.userId])
         }
         if(updatedUser.lastName){
-            await client.query(`update ${schema}.users set last_name= $1 where user_id = $2;`, [updatedUser.lastName, updatedUser.userId])
+            await client.query('update tattoobooking_user_service.users set last_name= $1 where user_id = $2;', [updatedUser.lastName, updatedUser.userId])
         }
         if(updatedUser.email){
-            await client.query(`update ${schema}.users set email = $1 where user_id = $2;`, [updatedUser.email , updatedUser.userId])
+            await client.query('update tattoobooking_user_service.users set email = $1 where user_id = $2;', [updatedUser.email , updatedUser.userId])
         }
         if(updatedUser.birthday){
-            await client.query(`update ${schema}.users set birthday = $1 where user_id = $2;`, [updatedUser.birthday , updatedUser.userId])
+            await client.query('update tattoobooking_user_service.users set birthday = $1 where user_id = $2;', [updatedUser.birthday , updatedUser.userId])
         }
         if(updatedUser.phoneNumber){
-            await client.query(`update ${schema}.users set phone_number = $1 where user_id = $2;`, [updatedUser.phoneNumber , updatedUser.userId])
->>>>>>> cc9cccc67b2c3ed77b2c037d527a83842a8db904
+            await client.query('update tattoobooking_user_service.users set phone_number = $1 where user_id = $2;', [updatedUser.phoneNumber , updatedUser.userId])
         }
         
         if(updatedUser.role ){
-          let role_id =   await client.query(`select r.role_id from ${schema}.roles r  where r.role = $1;`, [updatedUser.role])
-          if(role_id.rowCount === 0){
+          let roleId =   await client.query(`select r.role_id from ${schema}.roles r  where r.role = $1;`, [updatedUser.role])
+          if(roleId.rowCount === 0){
               throw new Error ('Role not found')
           }
-          role_id = role_id.rows[0].role_id
-<<<<<<< HEAD
-          await client.query('update tattoobooking_user_service.users set "role"= $1 where user_id = $2;', [role_id, updatedUser.user_id])
-=======
-          await client.query(`update ${schema}.users set "role"= $1 where user_id = $2;`, [role_id, updatedUser.userId])
->>>>>>> cc9cccc67b2c3ed77b2c037d527a83842a8db904
+          roleId = roleId.rows[0].roleId
+          await client.query('update tattoobooking_user_service.users set "role"= $1 where user_id = $2;', [roleId, updatedUser.userId])
         }
         await client.query('COMMIT;') 
-        return findUserById(updatedUser.user_id)
+        return findUserById(updatedUser.userId)
 
     } catch (error) {
         client && client.query('ROLLBACK;')
@@ -185,27 +144,27 @@ export async function submitNewUser(newUser: Users):Promise<Users>{
         client = await connectionPool.connect()
         await client.query('BEGIN;')
 
-        let role_id = await client.query(`select r.role_id from ${schema}.roles r where r."role" = $1;`, [newUser.role])
-            if(role_id.rowCount === 0){
+        let roleId = await client.query(`select r.role_id from tattoobooking_user_service.roles r where r."role" = $1;`, [newUser.role])
+            if(roleId.rowCount === 0){
                 throw new Error('Role not found')
             } 
 
-            role_id = role_id.rows[0].role_id
+            roleId = roleId.rows[0].roleId
             
-        let newuserinfo = await client.query(`insert into ${schema}.users("username", 
+        let newuserinfo = await client.query(`insert into tattoobooking_user_service.users("username", 
             "password",
             "first_name",
             "last_name",
             "email", "birthday", "phone_number", "role") values ($1, $2, $3, $4, $5, $6, $7, $8) returning "user_id" `, 
-            [newUser.username, newUser.password, newUser.first_name, newUser.last_name, newUser.email, newUser.phone_number, newUser.birthday, role_id])
-            newUser.user_id = (await newuserinfo).rows[0].user_id
+            [newUser.username, newUser.password, newUser.firstName, newUser.lastName, newUser.email, newUser.birthday, newUser.phoneNumber, roleId])
+            newUser.userId = (await newuserinfo).rows[0].userId
             await client.query('COMMIT;')
             return newUser
 
     } catch (error) {
         client && client.query('ROLLBACK;')
         if(error.message === 'Role not found') {
-            throw new UserMissingInputError();
+            throw new Error('something went wrong')
         }
         console.log(error)
         throw new Error('un implemented error handling')
