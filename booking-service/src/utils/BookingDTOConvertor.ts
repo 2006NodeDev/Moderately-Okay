@@ -13,11 +13,11 @@ export function BookingDTOtoBookingConvertor(bdto:BookingDTO) : Bookings{
         style: bdto.style,
         size: bdto.size,
         location: bdto.location,
-       // imageTest:bdto.imageTest,
+        imageTest:bdto.imageTest,
         color: bdto.color,
         artist: bdto.artist,
         shop: bdto.shop,
-        //date: bdto.date,
+        date: bdto.date,
         //time: bdto.time
     }
 

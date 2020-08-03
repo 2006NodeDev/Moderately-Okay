@@ -39,12 +39,14 @@ export async function findBookingByUser(userId:number):Promise<Bookings>{
         u1.user_id as customer, 
         b.size, 
         b.location, 
+        b.image, 
         b.color, 
         u2.user_id as artist,
         b.style, 
         s.style_id, 
         b.shop, 
-        sh.shop_id 
+        sh.shop_id,
+        b.date
         from tattoobooking_booking_service.bookings b 
         left join tattoobooking_user_services.users u1 on b.customer = u1.user_id
         left join tattoobooking_booking_service.style s on b.style = s.style_id
@@ -52,9 +54,7 @@ export async function findBookingByUser(userId:number):Promise<Bookings>{
         left join tattoobooking_booking_service.shop sh on b.shop = sh.shop_id
         where b.customer = $1 order by b.date;`, [userId])
 
-         //b.image, 
-        // b.date, 
-       // b.time,
+        
 /*
 b.customer = u.user_id
 b.artist = u.user_id
@@ -120,10 +120,8 @@ export async function submitNewBooking(newBooking: Bookings):Promise<Bookings>{
         }else {
             bookTattoostyle = bookTattoostyle.rows[0].style_id
         }        
-        let results = client.query(`insert into tattoobooking_booking_service.bookings("customer", "style", "size", "location", "image", "color", "artist", "shop", "date", "time") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning bookings_id`,
-        [newBooking.customer, newBooking.style, newBooking.size, newBooking.location, newBooking.color, newBooking.artist,newBooking.shop, bookTattoostyle ])
-        // newBooking.imageTest,
-        //newBooking.date, newBooking.time,
+        let results = client.query(`insert into tattoobooking_booking_service.bookings("customer", "style", "size", "location", "image", "color", "artist", "shop", "date") values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning bookings_id`,
+        [newBooking.customer, newBooking.style, newBooking.size, newBooking.location,newBooking.imageTest, newBooking.color, newBooking.artist,newBooking.shop,newBooking.date, bookTattoostyle ])
         newBooking.bookingId = (await results).rows[0].booking_id
         await client.query('COMMIT;')
         return newBooking
@@ -185,18 +183,16 @@ export async function updateExistingBooking(updateBooking:Bookings): Promise <Bo
         if(updateBooking.location){
             await client.query(`update tattoobooking_booking_service.bookings  set "location" = $1 where "booking_id" = $2;`, [updateBooking.location, updateBooking.bookingId])
         }
-       // if(updateBooking.imageTest){
-         //   await client.query(`update tattoobooking_booking_service.bookings  set "image" = $1 where "booking_id" = $2;`, [updateBooking.imageTest, updateBooking.bookingId])
-        //}
-        //if(updateBooking.color){
-          //  await client.query(`update tattoobooking_booking_service.bookings  set "color" = $1 where "booking_id" = $2;`, [updateBooking.color, updateBooking.bookingId])
-        //}
-        //if(updateBooking.date){
-          //  await client.query(`update tattoobooking_booking_service.bookings  set "date" = $1 where "booking_id" = $2;`, [updateBooking.date, updateBooking.bookingId])
-        //}
-        //if(updateBooking.time){
-          //  await client.query(`update tattoobooking_booking_service.bookings  set "time" = $1 where "booking_id" = $2;`, [updateBooking.time, updateBooking.bookingId])
-        //}
+       if(updateBooking.imageTest){
+           await client.query(`update tattoobooking_booking_service.bookings  set "image" = $1 where "booking_id" = $2;`, [updateBooking.imageTest, updateBooking.bookingId])
+        }
+        if(updateBooking.color){
+          await client.query(`update tattoobooking_booking_service.bookings  set "color" = $1 where "booking_id" = $2;`, [updateBooking.color, updateBooking.bookingId])
+        }
+        if(updateBooking.date){
+          await client.query(`update tattoobooking_booking_service.bookings  set "date" = $1 where "booking_id" = $2;`, [updateBooking.date, updateBooking.bookingId])
+        }
+       
         //style
         if(updateBooking.style){
             let style_id = await client.query(`select s."style_id" from tattoobooking_booking_service.styles s where s."type" = $1;` , [updateBooking.style])

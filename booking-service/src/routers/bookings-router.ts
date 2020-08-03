@@ -37,11 +37,11 @@ bookingRouter.get('/bookings/bookingId/:booking_id', async(req:Request, res:Resp
     let {user_id} = req.params
     //COMMENTED THIS OUT BECAUSE IT'S CONNECTED TO THE USER SERVICE
     //WILL NEED TO MAKE THE CONNECTION
-   //if(isNaN(+user_id)){
-       // throw new InvalidIdError()
+   if(isNaN(+user_id)){
+        throw new InvalidIdError()
     //} else if(req.session.user.user_id !== +user_id && req.session.user.role === "User"){
      //   next(new AuthenticationFailure())
-    // }else {
+     }else {
         try {
             let bookByUserId = await findBookingByUser(+user_id)
             res.json(bookByUserId)
@@ -49,7 +49,7 @@ bookingRouter.get('/bookings/bookingId/:booking_id', async(req:Request, res:Resp
            next(error)
        }
     }
-
+}
     )
 // Submit a reimbursment
 bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
@@ -58,11 +58,11 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
         style,
         size,
         location,
-       // imageTest,
-            color,
-            artist,
-            shop,
-            //date,
+        imageTest,
+        color,
+        artist,
+        shop,
+        date,
            // time,
     } = req.body
 
@@ -77,11 +77,11 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             style,
             size,
             location,
-           // imageTest,
+            imageTest,
             color,
             artist,
             shop,
-           // date,
+            date,
            // time
            // reimbursement_id: 0,
             //author,
@@ -114,10 +114,10 @@ bookingRouter.patch('/', async (req:Request, res:Response, next:NextFunction)=>{
         style,
         size,
         location,
-        //imageTest,
+        imageTest,
         color,
         shop,
-        //date,
+        date,
         //time
         /*
         reimbursement_id,
@@ -137,21 +137,21 @@ bookingRouter.patch('/', async (req:Request, res:Response, next:NextFunction)=>{
             style,
             size,
             location,
-            //imageTest,
+            imageTest,
             color,
             artist: req.session.user.user_id,
             shop,
-            //date,
+            date,
             //time
         }
         updatedBooking.customer = customer 
         updatedBooking.style = style 
         updatedBooking.size = size 
         updatedBooking.location = location 
-       // updatedBooking.imageTest = imageTest 
+        updatedBooking.imageTest = imageTest 
         updatedBooking.color = color 
         updatedBooking.shop = shop 
-        //updatedBooking.date = date 
+        updatedBooking.date = date 
         //updatedBooking.time = time 
         try {
             let updatedBookingResults = await updateExistingBooking(updatedBooking)

@@ -6,13 +6,12 @@ export class Bookings {
     style: number // int references styles ("style_id")
     size: string// text
     location: string 
-   // imageTest: string // FIGURE THIS OUT
+    imageTest: string // FIGURE THIS OUT
     color: boolean // 	color BOOLEAN
     artist: number // 	artist int references tattoobooking_user_service.users ("user_id"),
     shop: number // 	shop int references shops ("shop_id"),
-    //date: Date //	"date" date,
+    date: Date //	"date" date,
     //time: string //	"time" time
-   // image: any
 }
 
 
