@@ -2,7 +2,7 @@
 import { SaveTattooImage } from "../daos/CloudStorage/booking-images";
 import { bucketBaseUrl } from "../daos/CloudStorage";
 import { Bookings } from "../models/Bookings";
-import { getAllBookings, findBookingByUser, updateExistingBooking, submitNewBooking, findBookingByBookingId } from "../daos/SQL/booking-dao";
+import { getAllBookings, updateExistingBooking, submitNewBooking, findBookingByBookingId, findBookingByCustomer, findBookingByArtistId, findShopByArtist } from "../daos/SQL/booking-dao";
 
 // this call dao
 
@@ -10,8 +10,8 @@ export async function getAllBookingsService():Promise<Bookings[]>{
     return await getAllBookings()
 }
 
-export async function findBookingByUserService(userId:number):Promise<Bookings>{
-    return await findBookingByUser(userId)
+export async function findBookingByCustomerService(userId:number):Promise<Bookings>{
+    return await findBookingByCustomer(userId)
 }
 
 // will work on in later feel free to comment out this method if you need to 
@@ -39,4 +39,12 @@ export async function UpdateExistingBookingService(booking:Bookings):Promise<Boo
 
 export async function findBookingByBookingIdService(id: number):Promise<Bookings>{
     return await findBookingByBookingId(id)
+}
+
+export async function findBookingByArtistIdService(userId:number):Promise<Bookings>{
+    return await findBookingByArtistId(userId)
+}
+
+export async function findShopByArtistService(userId:number):Promise<Bookings>{
+    return await findShopByArtist(userId)
 }
