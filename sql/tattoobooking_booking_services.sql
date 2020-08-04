@@ -44,8 +44,7 @@ create table bookings(
 	color BOOLEAN,
 	artist int not null,
 	shop int references shops ("shop_id"),
-	"date" date,
-	"time" time
+	"date" timestamp
 );
 
 insert into shops ("shop_name", "street_address", "city", "state", "phone_number", "email", "open_at", "close_at")
@@ -93,11 +92,13 @@ insert into artist_styles values
 (6, 4),
 (6, 9);
 
-insert into bookings ("customer", "style", "color", "artist", "shop", "date", "time")
-values (2, 8, 'y', 6, 5, '9/26/2020', '2:00 PM');
+truncate tattoobooking_booking_service.bookings 
 
-insert into bookings ("customer", "style", "size", "location", "color", "artist", "shop", "date", "time")
-values (9, 1, '5 by 5', 'arm', 'y', 5, 3, '10/5/2020', '3:00 PM');
+insert into tattoobooking_booking_service.bookings ("customer", "style", "color", "artist", "shop", "date")
+values (2, 8, 'y', 6, 5, '9/26/2020 2:00 PM');
 
-insert into bookings("customer", "style", "artist", "shop", "date", "time")
-values (7, 7, 3, 2, '11/17/2020', '1:00 PM');
+insert into tattoobooking_booking_service.bookings ("customer", "style", "size", "location", "color", "artist", "shop", "date")
+values (9, 1, '5 by 5', 'arm', 'y', 5, 3, '10/5/2020 3:00 PM');
+
+insert into tattoobooking_booking_service.bookings("customer", "style", "artist", "shop", "date")
+values (7, 7, 3, 2, '11/17/2020 1:00 PM');
