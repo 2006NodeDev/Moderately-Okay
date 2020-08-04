@@ -1,22 +1,23 @@
 import express, {Request, Response, NextFunction} from 'express'
 
 import { InvalidIdError } from '../errors/InvalidIdError';
-import { authenticationMiddleware } from '../middlewares/authentication-middleware';
+//import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
 import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
 import { AuthenticationFailure } from '../errors/AuthenticationFailure';
-import { getAllBookingsService, findBookingByUserService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByBookingIdService } from '../services/booking-service';
-import { updateExistingBooking } from '../daos/SQL/booking-dao';
+import { getAllBookingsService, findBookingByUserService, UpdateExistingBookingService, SubmitNewBookingService } from '../services/booking-service';
+
 
 //updateBooking
 
 export let bookingRouter = express.Router();
 
-bookingRouter.use(authenticationMiddleware)
+//bookingRouter.use(authenticationMiddleware)
 
 //updated this func to reflect booking DONE
-bookingRouter.get('/', authorizationMiddleWare(['admin']),async (req:Request, res:Response, next:NextFunction)=>{
+//authorizationMiddleWare(['admin'])
+bookingRouter.get('/' ,async (req:Request, res:Response, next:NextFunction)=>{
     try {
         let booking = await getAllBookingsService()
         res.json(booking)
@@ -56,7 +57,7 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             artist,
             shop,
             date,
-            time,
+           // time,
     } = req.body
 
     let customer = req.session.user.user_id;
@@ -75,8 +76,7 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             artist,
             shop,
             date,
-            // 
-            time
+            //  time
            // reimbursement_id: 0,
             //author,
             //amount,
@@ -100,7 +100,8 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
 // Update Booking patch 
 //updates function name, exports, calls, and variables DONE
 // Updated booking fields per db PENDING
-bookingRouter.patch('/', authorizationMiddleWare(['admin', 'artist', 'customer']), async (req:Request, res:Response, next:NextFunction)=>{
+// , authorizationMiddleWare(['admin', 'artist', 'customer'])
+bookingRouter.patch('/', async (req:Request, res:Response, next:NextFunction)=>{
     let{
         bookingId,
         customer,
@@ -116,12 +117,12 @@ bookingRouter.patch('/', authorizationMiddleWare(['admin', 'artist', 'customer']
     } = req.body
     if(!bookingId || isNaN(bookingId)){
         next (new InvalidIdError());    
-    }else if(req.session.user.userId !== +customer  && req.session.user.role === "customer" || req.session.user.role === "artist"){
-        next(new AuthenticationFailure())
+    //}else if(req.session.user.userId !== +customer  && req.session.user.role === "customer" || req.session.user.role === "artist"){
+     //   next(new AuthenticationFailure())
     }else {
         let updatedBooking:Bookings ={
             bookingId,
-            customer: req.session.user.user_id,
+            customer,  // req.session.user.user_id,
             style,
             size,
             location,
