@@ -42,6 +42,7 @@ bookingRouter.get('/author/userId/:user_id', authorizationMiddleWare(['Finance M
        }
     }
 })
+
 // Submit new booking
 bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
     

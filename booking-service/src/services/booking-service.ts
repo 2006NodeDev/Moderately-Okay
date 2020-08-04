@@ -22,23 +22,20 @@ export async function SubmitNewBookingService(newBooking:Bookings):Promise<Booki
         let [dataType, imageBase64Data] = base64Image.split(';base64,')
         let contentType = dataType.split('/').pop()
         if (newBooking.imageTest) {
-            newBooking.imageTest = `${bucketBaseUrl}/users/${newBooking.customer}/profile.${contentType}`
+            newBooking.imageTest = `${bucketBaseUrl}/users/${newBooking.customer}/tattoo.${contentType}`
         }
         let savedBooking =  await submitNewBooking(newBooking)
-        await SaveTattooImage(contentType, imageBase64Data, `users/${newBooking.customer}/profile.${contentType}`)
+        await SaveTattooImage(contentType, imageBase64Data, `users/${newBooking.customer}/tattoo.${contentType}`)
         return savedBooking
     }catch (e){
         console.log(e)
         throw e 
-    }
-    
+    } 
 }
 
 export async function UpdateExistingBookingService(booking:Bookings):Promise<Bookings>{
     return await updateExistingBooking(booking)
 }
-
-
 
 export async function findBookingByIdService(id: number):Promise<Bookings>{
     return await findBookingById(id)
