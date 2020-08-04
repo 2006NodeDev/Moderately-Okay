@@ -4,7 +4,7 @@ import {findBookingByIdService} from '../../remote/moderatelyokay-api/moderately
 import {BookingDisplayComponent} from '../BookingDisplayComponent/BookingDisplayComponent'
 
 
-export const GetUserByIdComponent:FunctionComponent<any> = (props) => {
+export const GetBookingByIdComponent:FunctionComponent<any> = (props) => {
 
  
     let [bookingById, changeBookingById] = useState<Bookings[]>([])

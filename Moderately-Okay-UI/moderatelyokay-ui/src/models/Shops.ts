@@ -1,5 +1,3 @@
-
-
 export class Shop{
 
     shopId:number
@@ -9,11 +7,6 @@ export class Shop{
     state: string
     phoneNumber: string
     email:string  
-    openAt: number //VALIDATE DATA TYPE
-    closeAt:number //VALIDATE TIME
+    openAt: number
+    closeAt:number
 }
-
-
-
-
-

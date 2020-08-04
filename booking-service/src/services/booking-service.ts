@@ -2,7 +2,7 @@
 import { SaveTattooImage } from "../daos/CloudStorage/booking-images";
 import { bucketBaseUrl } from "../daos/CloudStorage";
 import { Bookings } from "../models/Bookings";
-import { getAllBookings, findBookingByUser, updateExistingBooking, submitNewBooking, findBookingById } from "../daos/SQL/booking-dao";
+import { getAllBookings, findBookingById, findBookingByCustomer, findBookingByArtistId, findShopByArtist} from "../daos/SQL/booking-dao";
 
 // this call dao
 
@@ -10,8 +10,9 @@ export async function getAllBookingsService():Promise<Bookings[]>{
     return await getAllBookings()
 }
 
-export async function findBookingByUserService(userId:number):Promise<Bookings>{
-    return await findBookingByUser(userId)
+//this has been fixed
+export async function findBookingByCustomerService(userId:number):Promise<Bookings>{
+    return await findBookingByCustomer(userId)
 }
 
 // will work on in later feel free to comment out this method if you need to 
@@ -22,10 +23,10 @@ export async function SubmitNewBookingService(newBooking:Bookings):Promise<Booki
         let [dataType, imageBase64Data] = base64Image.split(';base64,')
         let contentType = dataType.split('/').pop()
         if (newBooking.imageTest) {
-            newBooking.imageTest = `${bucketBaseUrl}/users/${newBooking.customer}/profile.${contentType}`
+            newBooking.imageTest = `${bucketBaseUrl}/bookings/${newBooking.bookingId}/profile.${contentType}` //this might still need some changes, but I think it should work
         }
-        let savedBooking =  await submitNewBooking(newBooking)
-        await SaveTattooImage(contentType, imageBase64Data, `users/${newBooking.customer}/profile.${contentType}`)
+        let savedBooking =  await SubmitNewBookingService(newBooking)
+        await SaveTattooImage(contentType, imageBase64Data, `bookings/${newBooking.bookingId}/profile.${contentType}`) //this might still need some changes, but I think it should work
         return savedBooking
     }catch (e){
         console.log(e)
@@ -34,8 +35,21 @@ export async function SubmitNewBookingService(newBooking:Bookings):Promise<Booki
     
 }
 
-export async function UpdateExistingBookingService(booking:Bookings):Promise<Bookings>{
-    return await updateExistingBooking(booking)
+export async function UpdateExistingBookingService(updatedBooking:Bookings):Promise<Bookings>{
+    try{
+        let base64Image = updatedBooking.imageTest
+        let [dataType, imageBase64Data] = base64Image.split(';base64,')
+        let contentType = dataType.split('/').pop()
+        if (updatedBooking.imageTest) {
+            updatedBooking.imageTest = `${bucketBaseUrl}/bookings/${updatedBooking.bookingId}/profile.${contentType}` //this might still need some changes, but I think it should work
+        }
+        let savedBooking =  await UpdateExistingBookingService(updatedBooking)
+        await SaveTattooImage(contentType, imageBase64Data, `bookings/${updatedBooking.bookingId}/profile.${contentType}`) //this might still need some changes, but I think it should work
+        return savedBooking
+    }catch (e){
+        console.log(e)
+        throw e 
+    }
 }
 
 
@@ -43,3 +57,14 @@ export async function UpdateExistingBookingService(booking:Bookings):Promise<Boo
 export async function findBookingByIdService(id: number):Promise<Bookings>{
     return await findBookingById(id)
 }
+
+export async function findBookingByArtistIdService(userId:number):Promise<Bookings>{
+    return await findBookingByArtistId(userId)
+}
+
+export async function findShopByArtistService(userId:number):Promise<Bookings>{
+    return await findShopByArtist(userId)
+}
+
+
+
