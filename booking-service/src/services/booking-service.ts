@@ -2,7 +2,7 @@
 import { SaveTattooImage } from "../daos/CloudStorage/booking-images";
 import { bucketBaseUrl } from "../daos/CloudStorage";
 import { Bookings } from "../models/Bookings";
-import { getAllBookings, findBookingByUser, updateExistingBooking, submitNewBooking, findBookingById } from "../daos/SQL/booking-dao";
+import { getAllBookings, findBookingByUser, updateExistingBooking, submitNewBooking, findBookingByBookingId } from "../daos/SQL/booking-dao";
 
 // this call dao
 
@@ -37,6 +37,6 @@ export async function UpdateExistingBookingService(booking:Bookings):Promise<Boo
     return await updateExistingBooking(booking)
 }
 
-export async function findBookingByIdService(id: number):Promise<Bookings>{
-    return await findBookingById(id)
+export async function findBookingByBookingIdService(id: number):Promise<Bookings>{
+    return await findBookingByBookingId(id)
 }

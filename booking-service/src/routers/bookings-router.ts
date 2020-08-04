@@ -6,7 +6,8 @@ import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
 import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
 import { AuthenticationFailure } from '../errors/AuthenticationFailure';
-import { getAllBookingsService, findBookingByUserService, UpdateExistingBookingService, SubmitNewBookingService } from '../services/booking-service';
+import { getAllBookingsService, findBookingByUserService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByBookingIdService } from '../services/booking-service';
+import { updateExistingBooking } from '../daos/SQL/booking-dao';
 
 //updateBooking
 
@@ -15,7 +16,7 @@ export let bookingRouter = express.Router();
 bookingRouter.use(authenticationMiddleware)
 
 //updated this func to reflect booking DONE
-bookingRouter.get('/', authorizationMiddleWare(['Finance Manager']),async (req:Request, res:Response, next:NextFunction)=>{
+bookingRouter.get('/', authorizationMiddleWare(['admin']),async (req:Request, res:Response, next:NextFunction)=>{
     try {
         let booking = await getAllBookingsService()
         res.json(booking)
@@ -99,7 +100,7 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
 // Update Booking patch 
 //updates function name, exports, calls, and variables DONE
 // Updated booking fields per db PENDING
-bookingRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (req:Request, res:Response, next:NextFunction)=>{
+bookingRouter.patch('/', authorizationMiddleWare(['admin', 'artist', 'customer']), async (req:Request, res:Response, next:NextFunction)=>{
     let{
         bookingId,
         customer,
@@ -108,48 +109,46 @@ bookingRouter.patch('/', authorizationMiddleWare(['Finance Manager']), async (re
         location,
         imageTest,
         color,
+        artist,
         shop,
         date,
-        time
-        /*
-        reimbursement_id,
-        author,
-        amount,
-        description,
-        status,
-        type
-        */
+       
     } = req.body
-
     if(!bookingId || isNaN(bookingId)){
-        next (new InvalidIdError());    }
+        next (new InvalidIdError());    
+    }else if(req.session.user.userId !== +customer  && req.session.user.role === "customer" || req.session.user.role === "artist"){
+        next(new AuthenticationFailure())
+    }else {
         let updatedBooking:Bookings ={
             bookingId,
-            customer,
+            customer: req.session.user.user_id,
             style,
             size,
             location,
             imageTest,
             color,
-            artist: req.session.user.user_id,
+            artist, 
             shop,
             date,
-            time
-
         }
-        updatedBooking.customer = customer 
-        updatedBooking.style = style 
+        updatedBooking.customer = customer || undefined
+        updatedBooking.style = style || undefined
         updatedBooking.size = size 
-        updatedBooking.location = location 
-        updatedBooking.imageTest = imageTest 
-        updatedBooking.color = color 
-        updatedBooking.shop = shop 
-        updatedBooking.date = date 
-        updatedBooking.time = time 
+        updatedBooking.location = location  || undefined
+        updatedBooking.imageTest = imageTest || undefined
+        updatedBooking.color = color || undefined
+        updatedBooking.artist = artist || undefined
+        updatedBooking.shop = shop || undefined
+        updatedBooking.date = date || undefined
+        
         try {
             let updatedBookingResults = await UpdateExistingBookingService(updatedBooking)
             res.json(updatedBookingResults)
         } catch (error) {
             next(error)
         }
+    }
+         
  })
+
+

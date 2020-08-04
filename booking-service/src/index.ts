@@ -19,9 +19,6 @@ app.use('/bookings', bookingRouter)
 app.get('/health', (req:Request, res:Response)=>{
     res.sendStatus(200)
 })
-
-
-
 app.use((err, req, res, next) =>{
     if(err.statusCode){
         res.status(err.statusCode).send(err.message)
@@ -31,6 +28,6 @@ app.use((err, req, res, next) =>{
     }
 })
 
-app.listen(2007, ()=>{
+app.listen(2009, ()=>{
     console.log('Server has started');
 })

@@ -4,6 +4,7 @@ import {BookingDTOtoBookingConvertor } from "../../utils/BookingDTOConvertor";
 import { BookingNotFound } from "../../errors/BookingNotFoundErrors";
 import { Bookings } from "../../models/Bookings";
 import { BookingInputError } from "../../errors/BookingInputError";
+import { findBookingByBookingIdService } from "../../services/booking-service";
 
 const schema = process.env['LB_SCHEMA'] || 'tattoobooking_booking_service'
 //updated getAllBooking func for booking DONE
@@ -113,26 +114,7 @@ export async function findBookingByUser(userId:number):Promise<Bookings>{
         client && client.release()
     }
 }
-/*
-(`select r.booking_id,
-        u1.user_id as author, 
-        r.amount, 
-        r.date_submitted, 
-        r.date_resolved, 
-        r.description, 
-        u2.user_id as resolver, 
-        rs.status, 
-        rs.status_id, 
-        rt."type", 
-        rt.type_id 
-        from employee_data.reimbursements r
-        left join employee_data.reimbursement_type rt on r."type" = rt.type_id
-        left join employee_data.reimbursement_status rs on r.status = rs.status_id
-        left join employee_data.users u1 on r.author = u1.user_id
-        left join employee_data.users u2 on r.resolver = u2.user_id
-        where u1.user_id = $1 order by r.date_submitted;`, [userId])
 
-*/
 
 //UPDATED FUNC NAME, CALLS AND EXPORTS DONE
 //UPDATE QUERY PER DB PENDING
@@ -166,39 +148,8 @@ export async function submitNewBooking(newBooking: Bookings):Promise<Bookings>{
         client && client.release();
     }
 }
-/*
-let client: PoolClient
-    try {
-        client = await connectionPool.connect()
-        await client.query('BEGIN;')
-        //let typeId = await client.query(`select rt.type_id ${schema}.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
-        let typeId = await client.query(`select rt.type_id ${schema}.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
-        //UPDATE TYPE
-        if(typeId.rowCount === 0){
-            throw new Error('Type not found')
-        }else {
-            typeId = typeId.rows[0].type_id
-        }
-        
-        let results = client.query(`insert into employee_data.reimbursements("author", "amount", "date_submitted", "date_resolved", "description", "resolver", "status", "type") values ($1, $2, $3, $4, $5, $6, $7, $8) returning reimbursement_id`,
-        [newBooking.customer, newBooking.style, newBooking.size, newBooking.location, newBooking.imageTest, newBooking.color, newBooking.artist,newBooking.shop, newBooking.date, newBooking.time, typeId ])
-        //UPDATE TYPEID       
-        newBooking.bookingId = (await results).rows[0].reimbursement_id
-        await client.query('COMMIT;')
-        return newBooking
-    } catch (error) {
-        client && client.query('ROLLBACK;')
-        if(error.message === 'Type not found'){
-            throw new BookingInputError();
-        }
-        console.log(error)
-        throw new Error('unimplemented error handling')
-    }finally{
-        client && client.release();
-    }
-}
-*/
 
+ 
 //UPDATED FUNC NAME, CALLS AND EXPORTS DONE
 //UPDATE QUERY PER DB PENDING
 // Update Booking
@@ -229,7 +180,7 @@ export async function updateExistingBooking(updateBooking:Bookings): Promise <Bo
         }      
         
         await client.query('COMMIT;') 
-        return findBookingById(updateBooking.bookingId)
+        return findBookingByBookingIdService(updateBooking.bookingId)
         
     } catch (error) {
         client && client.query('ROLLBACK;')
@@ -246,78 +197,20 @@ export async function updateExistingBooking(updateBooking:Bookings): Promise <Bo
         client && client.release()
     }
 }
-/*
-    let client: PoolClient
-    try {
-        client = await connectionPool.connect()
-        await client.query('BEGIN;')
-        if(updateBooking.style){
-            await client.query(`update employee_data.reimbursements  set "amount" = $1 where "reimbursement_id" = $2;`, [updateBooking.amount, updateBooking.bookingId])
-        }
-        if(updateBooking.size){
-            await client.query(`update employee_data.reimbursements  set "date_resolved" = $1 where "reimbursement_id" = $2;`, [updateBooking.date, updateBooking.bookingId])
-        }
-        if(updateBooking.location){
-            await client.query(`update employee_data.reimbursements  set "description" = $1 where "reimbursement_id" = $2;`, [updateBooking.description, updateBooking.bookingId])
-        }
-        if(updateBooking.imageTest){
-            await client.query(`update employee_data.reimbursements  set "resolver" = $1 where "reimbursement_id" = $2;`, [updateBooking.resolver, updateBooking.bookingId])
-        }
-        if(updateBooking.status){
-           let status_id =  await client.query(`select rs."status_id" from employee_data.reimbursement_status rs  where rs."status" = $1;`, [updateBooking.status])
-            if(status_id.rowCount === 0){
-                throw new Error('Status Not Found')
-            }
-
-            status_id= status_id.rows[0].status_id
-            await client.query(`update employee_data.reimbursements  set "status" = $1 where reimbursement_id = $2;` , [status_id, updateBooking.bookingId])
-        }
-        if(updateBooking.type){
-            let type_id = await client.query(`select rt."type_id" from employee_data.reimbursement_type rt where rt."type" = $1;` , [updateBooking.type])
-            if(type_id.rowCount === 0 ){
-                throw new Error("Type Not Found")
-            }
-            type_id= type_id.rows[0].type_id
-            await client.query('update employee_data.reimbursements  set "type"= $1 where reimbursement_id = $2;' , [type_id, updateBooking.bookingId])
-        }      
-        
-        await client.query('COMMIT;') 
-        return findBookingById(updateBooking.bookingId)
-        
-    } catch (error) {
-        client && client.query('ROLLBACK;')
-        if(error.message === 'Status Not Found'){
-            throw new Error ('Status Not Found')
-        }else if(error.message === 'Type Not Found'){
-            throw new Error ('Type Not Found')
-        }else if(error.message ===  'Invalid ID'){
-            throw new Error ('Invalid ID')
-        }
-        console.log(error);
-        throw new Error('Unhandled Error')
-    }finally {
-        client && client.release()
-    }
-}
-
-*/
-
-
 
 
 //UPDATED FUNC NAME, CALLS AND EXPORTS DONE
 //UPDATE QUERY PER DB PENDING
-export async function findBookingById(id:number):Promise<Bookings>{
+export async function findBookingByBookingId(id:number):Promise<Bookings>{
     let client: PoolClient;
     try {
         client = await connectionPool.connect()
-        let getBookingById:QueryResult = await client.query(`select * ${schema}.bookings b 
-        left join tattoobooking_booking_services.users u on r.customer = u.user_id  ???
-        left join tattoobooking_booking_services.reimbursement_type bs on bs.style_id = b."style"  
-        where b.bookings_id = $1 order by b.date;`, [id])
+        let getBookingById:QueryResult = await client.query(`select * from tattoobooking_booking_service.bookings b
+		left join tattoobooking_user_service.users u on b.customer = u.user_id  
+        where b.bookings_id = $1;`, [id])
         
         if(getBookingById.rowCount === 0){
-            throw new Error('Reimbursement not found')
+            throw new Error('Booking not found')
         }else{
             // because there will be one object
             return BookingDTOtoBookingConvertor(getBookingById.rows[0])
@@ -334,31 +227,3 @@ export async function findBookingById(id:number):Promise<Bookings>{
     }
 }
 
-
-/*
- let getBookingById:QueryResult = await client.query(`select * from employee_data.reimbursements r 
-        left join employee_data.users u on r.author = u.user_id 
-        left join employee_data.reimbursement_status rs  on r.status = rs.status_id 
-        left join employee_data.reimbursement_type rt on rt.type_id = r."type"  
-        where r.reimbursement_id = $1 order by r.date_submitted;`, [id])
-        
-        if(getBookingById.rowCount === 0){
-            throw new Error('Reimbursement not found')
-        }else{
-            // because there will be one object
-            return BookingDTOtoBookingConvertor(getBookingById.rows[0])
-        }
-    } catch (error) {
-        if(error.message === 'Booking not found'){
-            throw new BookingNotFound()
-        }
-        console.error();
-        throw new Error('unimplemented error')
-    }finally{
-        //  && guard operator we are making sure that client is exist then we release
-        client && client.release()
-    }
-}
-
-
-*/

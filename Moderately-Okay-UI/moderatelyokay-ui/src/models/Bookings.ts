@@ -5,10 +5,9 @@ export interface Bookings {
      style: number
      size: string
      location: string 
-     imageTest: string 
+     imageTest?: string 
      color: boolean 
      artist: number 
      shop: number 
      date: number 
-     time: number 
  }

@@ -10,8 +10,8 @@ export class Bookings {
     color: boolean // 	color BOOLEAN
     artist: number // 	artist int references tattoobooking_user_service.users ("user_id"),
     shop: number // 	shop int references shops ("shop_id"),
-    date: number //	"date" date,
-    time: number //	"time" time
+    date: Date //	"date" date,
+    //time: string //	"time" time
 }
 
 

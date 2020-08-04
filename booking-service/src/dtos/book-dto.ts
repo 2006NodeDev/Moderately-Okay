@@ -10,7 +10,7 @@ export class BookingDTO{
         color: boolean
         artist: number
         shop: number
-        date: number
-        time: number    
+        date: Date
+       // time: string    
 }
 
