@@ -321,6 +321,7 @@ export async function findBookingByArtistId(userId:number):Promise<Bookings>{
 }
 
 //the sql statement is not the prettiest, but we can limit what gets seen with the ui
+//Might be better in User
 export async function findArtistByStyle(id:number) {
     let client: PoolClient;
     try{
@@ -348,7 +349,7 @@ export async function findArtistByStyle(id:number) {
     }
 }
 
-export async function findShoptByArtist(id:number) {
+export async function findShopByArtist(id:number) {
     let client: PoolClient;
     try{
         client = await connectionPool.connect()

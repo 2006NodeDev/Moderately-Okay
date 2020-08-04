@@ -4,7 +4,7 @@ import { Bookings } from '../models/Bookings';
 //import { BookingInputError } from '../errors/BookingInputError';
 //import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
 //import { AuthenticationFailure } from '../errors/AuthenticationFailure';
-import { getAllBookingsService, UpdateExistingBookingService, findBookingByCustomerService } from '../services/booking-service';
+import { getAllBookingsService, UpdateExistingBookingService, findBookingByCustomerService, findBookingByArtistIdService, findShopByArtistService } from '../services/booking-service';
 //import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 
 
@@ -156,3 +156,40 @@ bookingRouter.patch('/', async (req:Request, res:Response, next:NextFunction)=>{
             next(error)
         }
  })
+
+ //get booking by Artist
+
+ bookingRouter.get('/artist/:userId', /*authorizationMiddleWare(['admin', 'user']),*/ async(req:Request, res:Response, next:NextFunction)=>{
+    let {userId} = req.params
+   if(isNaN(+userId)){
+        throw new InvalidIdError()
+    //} else if(req.session.user.userId !== +userId && req.session.user.role === "user"){
+     //   next(new AuthenticationFailure())
+     }else {
+        try {
+            let bookingByUserId = await findBookingByArtistIdService(+userId)
+            res.json(bookingByUserId)
+       } catch (error) {
+           next(error)
+       }
+    }
+})
+
+//get shop by Artist
+
+//is that route clunky? we can change it
+bookingRouter.get('/shops/artist/:userId', /*authorizationMiddleWare(['admin', 'user']),*/ async(req:Request, res:Response, next:NextFunction)=>{
+    let {userId} = req.params
+   if(isNaN(+userId)){
+        throw new InvalidIdError()
+    //} else if(req.session.user.userId !== +userId && req.session.user.role === "user"){
+     //   next(new AuthenticationFailure())
+     }else {
+        try {
+            let bookingByUserId = await findShopByArtistService(+userId)
+            res.json(bookingByUserId)
+       } catch (error) {
+           next(error)
+       }
+    }
+})

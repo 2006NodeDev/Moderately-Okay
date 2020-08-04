@@ -2,7 +2,7 @@
 import { SaveTattooImage } from "../daos/CloudStorage/booking-images";
 import { bucketBaseUrl } from "../daos/CloudStorage";
 import { Bookings } from "../models/Bookings";
-import { getAllBookings, findBookingById, findBookingByCustomer } from "../daos/SQL/booking-dao";
+import { getAllBookings, findBookingById, findBookingByCustomer, findBookingByArtistId, findShopByArtist} from "../daos/SQL/booking-dao";
 
 // this call dao
 
@@ -57,3 +57,20 @@ export async function UpdateExistingBookingService(updatedBooking:Bookings):Prom
 export async function findBookingByIdService(id: number):Promise<Bookings>{
     return await findBookingById(id)
 }
+
+export async function findBookingByArtistIdService(userId:number):Promise<Bookings>{
+    return await findBookingByArtistId(userId)
+}
+
+//This may be better off as a user endpoint
+
+/*export async function findArtistByStyleService(userId:number):Promise<User>{
+    return await findArtistByStyle(userId)
+}*/
+
+export async function findShopByArtistService(userId:number):Promise<Bookings>{
+    return await findShopByArtist(userId)
+}
+
+
+

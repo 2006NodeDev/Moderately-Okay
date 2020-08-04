@@ -1,6 +1,6 @@
 
 
-export class shops{
+export class Shop{
 
     shopId:number
     shopName: string
@@ -17,11 +17,3 @@ export class shops{
 
 
 
-
-//was reimbursement_types
-/*
-export class ReimbursementType{
-  type_id: number // primary key
-  type: string // not null, unique
-}
-*/
