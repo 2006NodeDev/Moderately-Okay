@@ -62,12 +62,6 @@ export async function findBookingByArtistIdService(userId:number):Promise<Bookin
     return await findBookingByArtistId(userId)
 }
 
-//This may be better off as a user endpoint
-
-/*export async function findArtistByStyleService(userId:number):Promise<User>{
-    return await findArtistByStyle(userId)
-}*/
-
 export async function findShopByArtistService(userId:number):Promise<Bookings>{
     return await findShopByArtist(userId)
 }
