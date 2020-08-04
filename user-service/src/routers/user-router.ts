@@ -4,7 +4,7 @@ import { Users } from '../models/Users';
 import { InvalidIdError } from '../errors/InvalidIdError';
 import { AuthenticationFailure } from '../errors/AuthenticationFailure';
 import { authenticationMiddleware } from '../middlewares/authentication-middleware';
-import { getAllUsersService, findUserByIdService, UpdateExistingUserService, SubmitNewUserService, } from '../services/user-service';
+import { getAllUsersService, findUserByIdService, UpdateExistingUserService, SubmitNewUserService, getAllArtistsService, } from '../services/user-service';
 import { UserMissingInputError } from '../errors/UserMissingInputError';
 
 
@@ -57,7 +57,7 @@ userRouter.get('/', authorizationMiddleWare(['admin']), async (req:Request, res:
 })
 
 //find by id
-userRouter.get('/:id', authorizationMiddleWare(['admin' ,'customer', 'artist']), async (req:Request, res:Response, next:NextFunction) =>{
+userRouter.get('/userid/:id', authorizationMiddleWare(['admin' ,'customer', 'artist']), async (req:Request, res:Response, next:NextFunction) =>{
     let {id} = req.params
     if(isNaN(+id)){
         res.status(400).send('Id must be a number')
@@ -121,6 +121,32 @@ userRouter.patch('/', authorizationMiddleWare(['admin', 'customer', 'artist']), 
         try {
             let updateResults = await UpdateExistingUserService(updatedUser)
             res.json(updateResults)
+        } catch (error) {
+            next(error)
+        }
+    }
+})
+
+//get all artists
+userRouter.get('/artists', async (req:Request, res:Response, next:NextFunction)=>{
+    try {
+        let getAllArtists = await getAllArtistsService()
+        res.json(getAllArtists)
+    } catch (error) {
+        next(error)
+    }
+})
+
+//get Artist by Style
+userRouter.get('/artist/:id', async (req:Request, res:Response, next:NextFunction) =>{
+    let {id} = req.params
+    if(isNaN(+id)){
+        res.status(400).send('Id must be a number')
+    }
+    else {
+        try {
+            let artistByStyle = await findUserByIdService(+id)
+            res.json(artistByStyle)
         } catch (error) {
             next(error)
         }
