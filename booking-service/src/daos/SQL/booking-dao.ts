@@ -5,6 +5,8 @@ import { BookingNotFound } from "../../errors/BookingNotFoundErrors";
 import { Bookings } from "../../models/Bookings";
 import { BookingInputError } from "../../errors/BookingInputError";
 import { findBookingByBookingIdService } from "../../services/booking-service";
+import { ShopNotFound } from "../../errors/ShopNotFoundError";
+import { ArtistNotFound } from "../../errors/ArtistNotFoundError";
 
 const schema = process.env['LB_SCHEMA'] || 'tattoobooking_booking_service'
 //updated getAllBooking func for booking DONE
@@ -30,74 +32,18 @@ export async function getAllBookings():Promise<Bookings[]>{
         client && client.release()
     }
 }
-//FIND BY STYLE
-//UPDATED FUNC NAME, CALLS AND EXPORTS DONE
-//UPDATE QUERY PER DB PENDING -  NEED HELP
-export async function findBookingtByStyleId(styleId:number):Promise<Bookings>{
+
+//It won't give me the customer information, but it does give me everything else. 
+export async function findBookingByCustomer(userId:number):Promise<Bookings>{
     let client : PoolClient
     try {
         client = await connectionPool.connect()
-        let bookByStyleIdResult: QueryResult = await client.query(`select b.booking_id,
-        u1.user_id as customer, 
-        b.size, 
-        b.location, 
-        b.date_resolved, 
-        b.image,
-        b.color,
-        b.date, 
-        b.time,
-        u2.user_id as artist, 
-        bs.style_id, 
-        bs.style_name, 
-        ba.artist, 
-        rt.style 
-        ${schema}.bookings r
-        left join tattoobooking_booking_services.styles rt on r."style" = rt.style
-        left join tattoobooking_booking_services.artist_styles rs on r.status = rs.status_id
-        left join tattoobooking_booking_services.bookings u1 on r.customer = u1.user_id
-        left join tattoobooking_booking_services.artist_styles u2 on r.artist = u2.user_id
-        where r.status = $1 order by r.sate;`, [styleId])
-        if(bookByStyleIdResult.rowCount ===0){
-            throw new Error('Booking Not Found')
-        }else{
-            return BookingDTOtoBookingConvertor(bookByStyleIdResult.rows[0])
-        }
-    } catch (error) {
-        if(error.message === 'Booking Not Found'){
-            throw new BookingNotFound();
-        }
-        console.log(error)
-        throw new Error('Unimplemented error handling')
-    }finally{
-        //  && guard operator we are making sure that client is exist then we release
-        client && client.release()
-    }
-}
-//UPDATED FUNC NAME, CALLS AND EXPORTS DONE
-//UPDATE QUERY PER DB - NEED HELP - CLARIFICATION ON THE USER PART
-export async function findBookingByUser(userId:number):Promise<Bookings>{
-    let client : PoolClient
-    try {
-        client = await connectionPool.connect()
-        let bookingByUserIdResult: QueryResult = await client.query(`select b.booking_id,
-        u1.user_id as customer, 
-        b.size, 
-        b.location, 
-        b.image, 
-        b.color, 
-        b.date, 
-        b.time,
-        u2.user_id as artist, ??
-        bs.style_name, 
-        bs.status_id, 
-        bsa.shop, 
-        bsa.style 
-        ${schema}.bookings r
-        left join tattoobooking_booking_services.styles rs on r."type" = rt.type_id
-        left join tattoobooking_booking_services.reimbursement_status rs on r.status = rs.status_id ???
-        left join tattoobooking_booking_services.bookings u1 on r.customer = u1.user_id
-        left join tattoobooking_booking_services.artist_styles u2 on r.artist = u2.user_id
-        where u1.user_id = $1 order by b.date;`, [userId])
+        let bookingByUserIdResult: QueryResult = await client.query(`select b.booking_id, u.first_name, u.last_name, 
+        u.user_id, b."style", b."size", b."location", b.image, b.color, b.artist, u.first_name, u.last_name, b.shop , b."date"
+        from ${schema}.bookings b 
+        left join tattoobooking_user_service.users u 
+        on b.customer = u.user_id 
+        where b.customer = $1 order by b.date;`, [userId])
         if(bookingByUserIdResult.rowCount ===0){
             throw new Error('Booking Not Found')
         }else{
@@ -117,23 +63,21 @@ export async function findBookingByUser(userId:number):Promise<Bookings>{
 
 
 //UPDATED FUNC NAME, CALLS AND EXPORTS DONE
-//UPDATE QUERY PER DB PENDING
+//UPDATE QUERY PER DB PENDING DONE
 export async function submitNewBooking(newBooking: Bookings):Promise<Bookings>{
     let client: PoolClient
     try {
         client = await connectionPool.connect()
         await client.query('BEGIN;')
-        //let typeId = await client.query(`select rt.type_id ${schema}.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
-        let bookTattoostyle = await client.query(`select bs.style_id ${schema}.styles bs where bs."style" = $1;`, [newBooking.style])
-        //UPDATE TYPE
+        //let typeId = await client.query(`select rt.type_id from tattoobooking_booking_service.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
+        let bookTattoostyle = await client.query(`select s.style_id from tattoobooking_booking_service.styles s where s."style" = $1;`, [newBooking.style])
         if(bookTattoostyle.rowCount === 0){
             throw new Error('Type not found')
         }else {
-            bookTattoostyle = bookTattoostyle.rows[0].type_id
+            bookTattoostyle = bookTattoostyle.rows[0].style_id
         }        
-        let results = client.query(`insert into tattoobooking_booking_services.reimbursebookings("customer", "style", "size", "location", "imageTest", "color", "artist", "shop", "date", "time") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning bookings_id`,
-        [newBooking.customer, newBooking.style, newBooking.size, newBooking.location, newBooking.imageTest, newBooking.color, newBooking.artist,newBooking.shop, newBooking.date, newBooking.time, bookTattoostyle ])
-        //UPDATE TYPEID       
+        let results = client.query(`insert into tattoobooking_booking_service.bookings("customer", "style", "size", "location", "image", "color", "artist", "shop", "date") values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning bookings_id`,
+        [newBooking.customer, newBooking.style, newBooking.size, newBooking.location,newBooking.imageTest, newBooking.color, newBooking.artist,newBooking.shop,newBooking.date, bookTattoostyle ])
         newBooking.bookingId = (await results).rows[0].booking_id
         await client.query('COMMIT;')
         return newBooking
@@ -227,3 +171,84 @@ export async function findBookingByBookingId(id:number):Promise<Bookings>{
     }
 }
 
+export async function findBookingByArtistId(userId:number):Promise<Bookings>{
+    let client : PoolClient
+    try {
+        client = await connectionPool.connect()
+        //not the best sql code but good enough for now
+        let bookingByUserIdResult: QueryResult = await client.query(`select b.booking_id, u.first_name, u.last_name, 
+        u.user_id, b."style", b."size", b."location", b.image, 
+        b.color, b.artist, b.shop , b."date", b."time" 
+        from ${schema}.bookings b 
+        left join tattoobooking_user_service.users u on b.artist = u.user_id
+        where b.artist = ${userId};`, [userId])
+        if(bookingByUserIdResult.rowCount ===0){
+            throw new Error('Booking Not Found')
+        }else{
+            return BookingDTOtoBookingConvertor(bookingByUserIdResult.rows[0])
+        }
+    } catch (error) {
+        if(error.message === 'Booking Not Found'){
+            throw new BookingNotFound();
+        }
+        console.log(error)
+        throw new Error('unimplemented error handling')
+    }finally{
+        client && client.release()
+    }
+}
+
+//the sql statement is not the prettiest, but we can limit what gets seen with the ui
+//Might be better in User
+export async function findArtistByStyle(id:number) {
+    let client: PoolClient;
+    try{
+        client = await connectionPool.connect()
+        let results: QueryResult = await client.query(`select u.user_id, u.username, u.first_name, u.last_name, 
+        u.phone_number, u.email, u."role", 
+        as1."style", s.style_name 
+        from tattoobooking_user_service.users u 
+        left join tattoobooking_booking_service.artist_styles as1 on u.user_id = as1.artist
+        left join tattoobooking_booking_service.styles s on as1."style" = s.style_id 
+        where as1."style" = ${id};` [id])
+        if(results.rowCount === 0){
+            throw new Error('NotFound')
+        }else{
+            return BookingDTOtoBookingConvertor(results.rows[0])
+        }
+    }catch(e){
+        if(e.message === 'NotFound'){
+            throw new ArtistNotFound()
+        }
+        console.log(e)
+        throw new Error('Unimplemented error handling')
+    }finally{
+        client && client.release()
+    }
+}
+
+export async function findShopByArtist(id:number) {
+    let client: PoolClient;
+    try{
+        client = await connectionPool.connect()
+        let results: QueryResult = await client.query(`select s.shop_id, s.shop_name, s.street_address, s.city, s.state, 
+        s.open_at, s.close_at, s.phone_number, s.email, u.first_name, u.last_name 
+        from tattoobooking_booking_service.shops s 
+        left join tattoobooking_booking_service.shop_artists sa on s.shop_id = sa.shop
+        left join tattoobooking_user_service.users u on sa.artist = u.user_id 
+        where sa.artist = ${id};`)
+        if(results.rowCount === 0){
+            throw new Error('NotFound')
+        }else{
+            return BookingDTOtoBookingConvertor(results.rows[0])
+        }
+    }catch(e){
+        if(e.message === 'NotFound'){
+            throw new ShopNotFound()
+        }
+        console.log(e)
+        throw new Error('Unimplemented error handling')
+    }finally{
+        client && client.release()
+    }
+}
