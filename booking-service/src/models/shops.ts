@@ -1,7 +1,6 @@
 
 
 export class Shop{
-
     shopId:number
     shopName: string
     streetAddress: string

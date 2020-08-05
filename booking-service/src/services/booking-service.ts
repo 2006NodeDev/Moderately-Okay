@@ -1,8 +1,10 @@
 
-import { SaveTattooImage } from "../daos/CloudStorage/booking-images";
+//import { getAllBookings, findUserById, submitNewUser, UpdateExistingUser } from "../daos/SQL/booking-dao-dao";
+//import { Users } from "../models/Users";
 import { bucketBaseUrl } from "../daos/CloudStorage";
 import { Bookings } from "../models/Bookings";
-import { getAllBookings, updateExistingBooking, submitNewBooking, findBookingByBookingId, findBookingByCustomer, findBookingByArtistId, findShopByArtist } from "../daos/SQL/booking-dao";
+import { getAllBookings, submitNewBooking, updateExistingBooking, findBookingByCustomer, findBookingByBookingId, findBookingByArtistId, findShopByArtist } from "../daos/SQL/booking-dao";
+import { SaveTattooImage } from "../daos/CloudStorage/booking-images";
 
 // this call dao
 
@@ -22,11 +24,11 @@ export async function SubmitNewBookingService(newBooking:Bookings):Promise<Booki
         let [dataType, imageBase64Data] = base64Image.split(';base64,')
         let contentType = dataType.split('/').pop()
         if (newBooking.imageTest) {
-            newBooking.imageTest = `${bucketBaseUrl}/users/${newBooking.customer}/tattoo.${contentType}`
+            newBooking.imageTest = `${bucketBaseUrl}/users/${newBooking.customer}/profile.${contentType}`
         }
-        let savedBooking =  await submitNewBooking(newBooking)
-        await SaveTattooImage(contentType, imageBase64Data, `users/${newBooking.customer}/tattoo.${contentType}`)
-        return savedBooking
+        let savedUser =  await submitNewBooking(newBooking)
+        await SaveTattooImage(contentType, imageBase64Data, `users/${newBooking.customer}/profile.${contentType}`)
+        return savedUser
     }catch (e){
         console.log(e)
         throw e 

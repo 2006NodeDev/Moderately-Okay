@@ -6,7 +6,7 @@ export class BookingDTO{
         style: number
         size: string
         location: string
-        imageTest: string
+        image: string
         color: boolean
         artist: number
         shop: number
