@@ -207,3 +207,6 @@ bookingRouter.get('/shops/artist/:userId', async(req:Request, res:Response, next
        }
     }
 })
+
+
+

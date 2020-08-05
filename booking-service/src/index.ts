@@ -19,6 +19,7 @@ app.use('/bookings', bookingRouter)
 app.get('/health', (req:Request, res:Response)=>{
     res.sendStatus(200)
 })
+
 app.use((err, req, res, next) =>{
     if(err.statusCode){
         res.status(err.statusCode).send(err.message)
