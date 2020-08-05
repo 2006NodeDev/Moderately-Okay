@@ -1,17 +1,10 @@
 
-<<<<<<< Updated upstream
-import { SaveTattooImage } from "../daos/CloudStorage/booking-images";
-import { bucketBaseUrl } from "../daos/CloudStorage";
-import { Bookings } from "../models/Bookings";
-import { getAllBookings, updateExistingBooking, submitNewBooking, findBookingByBookingId, findBookingByCustomer, findBookingByArtistId, findShopByArtist } from "../daos/SQL/booking-dao";
-=======
 //import { getAllBookings, findUserById, submitNewUser, UpdateExistingUser } from "../daos/SQL/booking-dao-dao";
 //import { Users } from "../models/Users";
-import { SaveTattooimage } from "../daos/CloudStorage/booking-images";
 import { bucketBaseUrl } from "../daos/CloudStorage";
 import { Bookings } from "../models/Bookings";
-import { getAllBookings, findBookingByUser, submitNewBooking, updateExistingBooking } from "../daos/SQL/booking-dao";
->>>>>>> Stashed changes
+import { getAllBookings, submitNewBooking, updateExistingBooking, findBookingByCustomer, findBookingByBookingId, findBookingByArtistId, findShopByArtist } from "../daos/SQL/booking-dao";
+import { SaveTattooImage } from "../daos/CloudStorage/booking-images";
 
 // this call dao
 
@@ -31,19 +24,11 @@ export async function SubmitNewBookingService(newBooking:Bookings):Promise<Booki
         let [dataType, imageBase64Data] = base64Image.split(';base64,')
         let contentType = dataType.split('/').pop()
         if (newBooking.imageTest) {
-<<<<<<< Updated upstream
-            newBooking.imageTest = `${bucketBaseUrl}/users/${newBooking.customer}/tattoo.${contentType}`
-        }
-        let savedBooking =  await submitNewBooking(newBooking)
-        await SaveTattooImage(contentType, imageBase64Data, `users/${newBooking.customer}/tattoo.${contentType}`)
-        return savedBooking
-=======
             newBooking.imageTest = `${bucketBaseUrl}/users/${newBooking.customer}/profile.${contentType}`
         }
         let savedUser =  await submitNewBooking(newBooking)
-        await SaveTattooimage(contentType, imageBase64Data, `users/${newBooking.customer}/profile.${contentType}`)
+        await SaveTattooImage(contentType, imageBase64Data, `users/${newBooking.customer}/profile.${contentType}`)
         return savedUser
->>>>>>> Stashed changes
     }catch (e){
         console.log(e)
         throw e 
@@ -54,7 +39,6 @@ export async function UpdateExistingBookingService(booking:Bookings):Promise<Boo
     return await updateExistingBooking(booking)
 }
 
-<<<<<<< Updated upstream
 export async function findBookingByBookingIdService(id: number):Promise<Bookings>{
     return await findBookingByBookingId(id)
 }
@@ -66,5 +50,3 @@ export async function findBookingByArtistIdService(userId:number):Promise<Bookin
 export async function findShopByArtistService(userId:number):Promise<Bookings>{
     return await findShopByArtist(userId)
 }
-=======
->>>>>>> Stashed changes
