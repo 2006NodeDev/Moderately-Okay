@@ -16,8 +16,11 @@ export async function getAllBookings():Promise<Bookings[]>{
     let client: PoolClient;
     try {
         client = await connectionPool.connect()
-        let getAllBookingResults:QueryResult = await client.query(`select * from tattoobooking_booking_service.bookings b
-        order by b.date;`)
+        let getAllBookingResults:QueryResult = await client.query(`select b.booking_id, u1.user_id as customer,b.size,b.location,b.image,b.color,u2.user_id as artist,b.style,s.style_id,b.shop,sh.shop_id,b.date from tattoobooking_booking_service.bookings b 
+            left join tattoobooking_user_service.users u1 on b.customer = u1.user_id
+            left join tattoobooking_booking_service.styles s on b.style = s.style_id
+            left join tattoobooking_user_service.users u2 on b."artist" = u2.user_id
+            left join tattoobooking_booking_service.shops sh on b.shop = sh.shop_id;`)
         if(getAllBookingResults.rowCount ===0){
             throw new BookingNotFound();
         }else{
