@@ -4,13 +4,8 @@ import { InvalidIdError } from '../errors/InvalidIdError';
 //import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
-import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
 import { AuthenticationFailure } from '../errors/AuthenticationFailure';
-<<<<<<< HEAD
-import { getAllBookingsService, findBookingByUserService, UpdateExistingBookingService, SubmitNewBookingService } from '../services/booking-service';
-=======
-import { getAllBookingsService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByCustomerService, findShopByArtistService, findBookingByArtistIdService } from '../services/booking-service';
->>>>>>> 475f2fb9cad4a2c8c336e0b866ffbe556f9a290c
+import { getAllBookingsService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByCustomerService, findBookingByArtistIdService, findShopByArtistService } from '../services/booking-service';
 
 
 //updateBooking
@@ -60,12 +55,7 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             color,
             artist,
             shop,
-<<<<<<< HEAD
-            date,
-           // time,
-=======
             date
->>>>>>> 475f2fb9cad4a2c8c336e0b866ffbe556f9a290c
     } = req.body
 
     let customer = req.session.user.user_id;
@@ -84,7 +74,6 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             artist,
             shop,
             date,
-<<<<<<< HEAD
             //  time
            // reimbursement_id: 0,
             //author,
@@ -95,8 +84,6 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
             //resolver:null,
             //status:3,
             //type,
-=======
->>>>>>> 475f2fb9cad4a2c8c336e0b866ffbe556f9a290c
         }
         try {
             let submitBookingRes = await SubmitNewBookingService(newBooking)
