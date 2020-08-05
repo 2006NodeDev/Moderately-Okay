@@ -5,6 +5,8 @@ import {LoginComponent} from './components/LoginComponent/LoginComponent'
 import {SignUpComponent} from './components/SignupComponent/SignupComponent'
 import {ProfileComponent} from './components/ProfileComponent/ProfileComponent'
 import {BrowserRouter as Router,Route} from 'react-router-dom'
+import { AddNewBookingComponent } from './components/AddNewBookingComponent/AddNewBookingComponent';
+
 function App() {
   return (
     <div className="App">
@@ -13,6 +15,7 @@ function App() {
         <Route path = '/login' component ={LoginComponent}></Route>
         <Route path='/signup' render={()=>(<SignUpComponent/>)} />
         <Route path='/profile/:userId' component={ProfileComponent}></Route>
+        <Route path='/addnewbooking' component={AddNewBookingComponent}></Route>
       </Router>
     </div>
   );
