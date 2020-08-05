@@ -3,8 +3,6 @@ import { Button, TextField, makeStyles, Theme, createStyles} from '@material-ui/
 import { Bookings } from '../../models/Bookings'
 import { addNewBooking } from '../../remote/moderatelyokay-api/moderatelyokayaddnewbooking'
 
-//definitely need to test this one later, I'm not sure if it works
-//test after Maricruz gives the go ahead.
 
 const styles = [
     {
