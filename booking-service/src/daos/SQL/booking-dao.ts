@@ -13,22 +13,52 @@ const schema = process.env['LB_SCHEMA'] || 'tattoobooking_booking_service'
 //update DB QUERY DONE
 //Promise is representation of a future value of an error
 export async function getAllBookings():Promise<Bookings[]>{
-    let client: PoolClient;
+    let client: PoolClient
     try {
+        //:QueryResult 
         client = await connectionPool.connect()
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+        let getAllBookingResults:QueryResult = await client.query(`select * from tattoobooking_booking_service.bookings b
+        order by b.date;`)
+=======
         let getAllBookingResults:QueryResult = await client.query(`select b.booking_id, u1.user_id as customer,b.size,b.location,b.image,b.color,u2.user_id as artist,b.style,s.style_id,b.shop,sh.shop_id,b.date from tattoobooking_booking_service.bookings b 
             left join tattoobooking_user_service.users u1 on b.customer = u1.user_id
             left join tattoobooking_booking_service.styles s on b.style = s.style_id
             left join tattoobooking_user_service.users u2 on b."artist" = u2.user_id
             left join tattoobooking_booking_service.shops sh on b.shop = sh.shop_id;`)
+>>>>>>> 63ee615166745c329df14c8cf9e5f9989c6ccbe5
         if(getAllBookingResults.rowCount ===0){
+=======
+        let getAllBookingResults = await client.query(`select b.booking_id, u1.user_id as customer,b.size,b.location,b.image,b.color,u2.user_id as artist,b.style,s.style_id,b.shop,sh.shop_id,b.date from tattoobooking_booking_service.bookings b 
+        left join tattoobooking_user_service.users u1 on b.customer = u1.user_id
+        left join tattoobooking_booking_service.styles s on b.style = s.style_id
+        left join tattoobooking_user_service.users u2 on b."artist" = u2.user_id
+        left join tattoobooking_booking_service.shops sh on b.shop = sh.shop_id;`) 
+        /*
+        b.customer
+        b."size", 
+        b."location", 
+        b."image",
+        b."color",
+        b."date",
+        r."role_id", 
+        r."role" 
+        from tattoobooking_booking_service.bookings b left join project1.roles r on u."role" = r.role_id;`)        
+        
+       select * from tattoobooking_booking_service.bookings b
+        order by b.date */
+
+      if(getAllBookingResults.rowCount === 0){
+>>>>>>> Stashed changes
             throw new BookingNotFound();
-        }else{
+       }
+    else{
             return getAllBookingResults.rows.map(BookingDTOtoBookingConvertor)
-            //return getAllReimResults.rows.map(ReimDTOtoReimbursementConvertor)
-        }        
-    } catch (error) {
-        console.error();
+           // return getAllReimResults.rows.map(ReimDTOtoReimbursementConvertor)
+      }        
+    } catch (e) {
+        console.log(e);
         throw new Error('unimplemented error')
     }finally{
         //  && guard operator we are making sure that client is exist then we release
@@ -71,16 +101,26 @@ export async function submitNewBooking(newBooking: Bookings):Promise<Bookings>{
     let client: PoolClient
     try {
         client = await connectionPool.connect()
-        await client.query('BEGIN;')
+        await client.query('BEGIN;') //start transaction
         //let typeId = await client.query(`select rt.type_id from tattoobooking_booking_service.reimbursement_type rt where rt."type" = $1;`, [newBooking.type])
+<<<<<<< Updated upstream
         let bookTattoostyle = await client.query(`select s.style_id from ${schema}.styles s where s."style" = $1;`, [newBooking.style])
+=======
+        let bookTattoostyle = await client.query(`select s."style_id" from tattoobooking_booking_service.style s where s."style" = $1;`, [newBooking.style])
+>>>>>>> Stashed changes
         if(bookTattoostyle.rowCount === 0){
             throw new Error('Type not found')
         }else {
             bookTattoostyle = bookTattoostyle.rows[0].style_id
         }        
+<<<<<<< Updated upstream
         let results = client.query(`insert into ${schema}.bookings("customer", "style", "size", "location", "image", "color", "artist", "shop", "date") values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning bookings_id`,
+=======
+        let results = client.query(`insert into tattoobooking_booking_service.bookings("customer", "style", "size", "location", "image", "color", "artist", "shop", "date") values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning "bookings_id" `,
+        
+>>>>>>> Stashed changes
         [newBooking.customer, newBooking.style, newBooking.size, newBooking.location,newBooking.imageTest, newBooking.color, newBooking.artist,newBooking.shop,newBooking.date, bookTattoostyle ])
+       
         newBooking.bookingId = (await results).rows[0].booking_id
         await client.query('COMMIT;')
         return newBooking
@@ -170,8 +210,12 @@ export async function updateExistingBooking(updateBooking:Bookings): Promise <Bo
         client && client.release()
     }
 }
+<<<<<<< Updated upstream
 
 
+=======
+*/
+>>>>>>> Stashed changes
 //UPDATED FUNC NAME, CALLS AND EXPORTS DONE
 //UPDATE QUERY PER DB PENDING
 export async function findBookingByBookingId(id:number):Promise<Bookings>{

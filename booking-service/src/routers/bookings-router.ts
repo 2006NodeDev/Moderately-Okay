@@ -1,15 +1,37 @@
 import express, {Request, Response, NextFunction} from 'express'
+<<<<<<< Updated upstream
 
+=======
+import {  getAllBookings,findBookingByUser, submitNewBooking, updateExistingBooking } from '../daos/SQL/booking-dao';
+>>>>>>> Stashed changes
 import { InvalidIdError } from '../errors/InvalidIdError';
+//
 //import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
+<<<<<<< HEAD
 //import { AuthenticationFailure } from '../errors/AuthenticationFailure';
+=======
+<<<<<<< Updated upstream
+import { AuthenticationFailure } from '../errors/AuthenticationFailure';
+>>>>>>> fc8a066ab73388752d03b1efcff90ef552985ef5
 import { getAllBookingsService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByCustomerService, findBookingByArtistIdService, findShopByArtistService } from '../services/booking-service';
 
 
 //updateBooking
 
+=======
+//import { getAllBookingsService } from '../services/booking-service';
+//import { authorizationMiddleWare } from '../middlewares/authorizationMiddleware';
+//import { AuthenticationFailure } from '../errors/AuthenticationFailure';
+/*
+BASIC FUNCTIONALITIES:
+1.Submit Booking
+2.Update Booking
+3.Find Booking by ID
+4.Find All Bookings
+*/
+>>>>>>> Stashed changes
 export let bookingRouter = express.Router();
 
 //bookingRouter.use(authenticationMiddleware)
@@ -43,10 +65,17 @@ bookingRouter.get('/customer/:userId', /*authorizationMiddleWare(['admin', 'user
            next(error)
        }
     }
+<<<<<<< Updated upstream
 })
 
 // Submit new booking
 bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
+=======
+}
+    )
+// Submit a reimbursment
+bookingRouter.post('/newbooking', async (req:Request, res:Response, next:NextFunction)=>{
+>>>>>>> Stashed changes
     
     let{
         style,
@@ -92,10 +121,8 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
         } catch (error) {
             next(error)
         }  
-    }
-    
+    }    
 })
-
 // Update Booking patch 
 //updates function name, exports, calls, and variables DONE
 // Updated booking fields per db PENDING
