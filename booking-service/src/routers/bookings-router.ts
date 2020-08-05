@@ -4,7 +4,7 @@ import { InvalidIdError } from '../errors/InvalidIdError';
 //import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
-import { AuthenticationFailure } from '../errors/AuthenticationFailure';
+//import { AuthenticationFailure } from '../errors/AuthenticationFailure';
 import { getAllBookingsService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByCustomerService, findBookingByArtistIdService, findShopByArtistService } from '../services/booking-service';
 
 
@@ -32,9 +32,10 @@ bookingRouter.get('/customer/:userId', /*authorizationMiddleWare(['admin', 'user
     let {userId} = req.params
    if(isNaN(+userId)){
         throw new InvalidIdError()
-    } else if(req.session.user.userId !== +userId && req.session.user.role === "user"){
-        next(new AuthenticationFailure())
-     }else {
+    } //else if(req.session.user.userId !== +userId && req.session.user.role === "user"){
+        //next(new AuthenticationFailure())
+     //}
+     else {
         try {
             let bookingByUserId = await findBookingByCustomerService(+userId)
             res.json(bookingByUserId)
@@ -52,10 +53,10 @@ bookingRouter.post('/', async (req:Request, res:Response, next:NextFunction)=>{
         size,
         location,
         imageTest,
-            color,
-            artist,
-            shop,
-            date
+        color,
+        artist,
+        shop,
+        date
     } = req.body
 
     let customer = req.session.user.user_id;

@@ -207,7 +207,7 @@ export async function findBookingByArtistId(userId:number):Promise<Bookings>{
         //not the best sql code but good enough for now
         let bookingByUserIdResult: QueryResult = await client.query(`select b.booking_id, u.first_name, u.last_name, 
         u.user_id, b."style", b."size", b."location", b.image, 
-        b.color, b.artist, b.shop , b."date", b."time" 
+        b.color, b.artist, b.shop , b."date"
         from ${schema}.bookings b 
         left join tattoobooking_user_service.users u on b.artist = u.user_id
         where b.artist = ${userId};`, [userId])
