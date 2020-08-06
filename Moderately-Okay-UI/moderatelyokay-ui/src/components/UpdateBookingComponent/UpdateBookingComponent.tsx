@@ -17,7 +17,7 @@ export const UpdateBookingComponent: FunctionComponent<any> = (props) => {
     let [imageTest, changeImage] = useState(undefined)
     let [color, changeColor] = useState(false)
     let [shop, changeShop] = useState(0)
-    let [date, changeDate] = useState(0)
+    let [date, changeDate] = useState(new Date())
   
   
   
