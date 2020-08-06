@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken'
 import { logger, errorLogger } from "../utils/logger";
 
 
-
 export  const JWTVerifyMiddleware = async (req: any, res: Response, Next: NextFunction) => {
     try {
         // ?. operator is really just short hand for the guard operator

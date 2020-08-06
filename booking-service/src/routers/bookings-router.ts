@@ -61,7 +61,6 @@ bookingRouter.get('/customer/:userId', async(req:Request, res:Response, next:Nex
 // Submit a reimbursment
 bookingRouter.post('/newbooking', async (req:any, res:Response, next:NextFunction)=>{
 
-    
     let{
         style,
         size,

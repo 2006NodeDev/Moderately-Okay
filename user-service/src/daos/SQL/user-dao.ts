@@ -5,6 +5,7 @@ import { UsersDTOtoUsersConvertor } from "../../utils/UsersDTOConvertors";
 import { AuthFailureError } from "../../errors/AuthFailureError";
 import { UserNotFound } from "../../errors/UserNotFoundError";
 import {ArtistNotFound } from '../../errors/ArtistNotFound'
+import { logger, errorLogger } from "../../utils/logger";
 
 const schema = process.env['LB_SCHEMA'] || 'tattoobooking_user_service'
 
@@ -21,9 +22,10 @@ export async function getAllUsers():Promise<Users[]>{
         r."role" , r.role_id
         from ${schema}.users u  left join ${schema}.roles r on u."role" = r.role_id;`)
         return getAllUsers.rows.map(UsersDTOtoUsersConvertor)
-    } catch (error) {
-        console.error();
-        throw new Error('un implemented error')
+    } catch (e) {
+        logger.error(e);
+        errorLogger.error(e)
+        throw new Error ('Unhandled Error')
     }finally{
         //  && guard operator we are making sure that client is exist then we release
         client && client.release()
@@ -52,7 +54,8 @@ export async function findUserById(id:number):Promise<Users>{
         if(error.message === 'User not found'){
             throw new UserNotFound();
         }
-        console.error();
+        logger.error(error);
+        errorLogger.error(error)
         throw new Error('Unimplemented error')
     }finally{
         //  && guard operator we are making sure that client is exist then we release
@@ -80,7 +83,8 @@ export async function getUserByusernameAndPassword(username, password):Promise<U
         if(error.message === 'User not found'){
             throw new AuthFailureError()
         }
-        console.error();
+        logger.error(error);
+        errorLogger.error(error)
         throw new Error('Unimplemented Error')
     }finally{
         //  && guard operator we are making sure that client is exist then we release
@@ -132,7 +136,8 @@ export async function UpdateExistingUser(updatedUser:Users):Promise<Users>{
         if(error.message === 'Role not found'){
             throw new Error('Role not found')
         }
-        console.log(error);
+        logger.error(error);
+        errorLogger.error(error)
         throw new Error ('Unhandled Error')
     }finally{
         client && client.release();
@@ -167,7 +172,8 @@ export async function submitNewUser(newUser: Users):Promise<Users>{
         if(error.message === 'Role not found') {
             throw new Error('something went wrong')
         }
-        console.log(error)
+        logger.error(error);
+        errorLogger.error(error)
         throw new Error('un implemented error handling')
     }finally {
         client && client.release();
@@ -189,7 +195,8 @@ export async function getAllArtists():Promise<Users[]>{
         where r.role_id = 3;`)
         return getAllUsers.rows.map(UsersDTOtoUsersConvertor)
     } catch (error) {
-        console.error();
+        logger.error(error);
+        errorLogger.error(error)
         throw new Error('Unimplemented Error')
     }finally{
         client && client.release()
@@ -218,7 +225,8 @@ export async function getArtistByStyle(id:number) {
         if(e.message === 'NotFound'){
             throw new ArtistNotFound()
         }
-        console.log(e)
+        logger.error(e);
+        errorLogger.error(e)
         throw new Error('Unimplemented error handling')
     }finally{
         client && client.release()

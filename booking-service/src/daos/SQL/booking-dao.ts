@@ -7,6 +7,7 @@ import { BookingInputError } from "../../errors/BookingInputError";
 import { findBookingByBookingIdService } from "../../services/booking-service";
 import { ShopNotFound } from "../../errors/ShopNotFoundError";
 import { ArtistNotFound } from "../../errors/ArtistNotFoundError";
+import { errorLogger, logger } from "../../utils/logger";
 
 const schema = process.env['LB_SCHEMA'] || 'tattoobooking_booking_service'
 //updated getAllBooking func for booking DONE
@@ -33,7 +34,8 @@ export async function getAllBookings():Promise<Bookings[]>{
            // return getAllReimResults.rows.map(ReimDTOtoReimbursementConvertor)
       }        
     } catch (e) {
-        console.log(e);
+        errorLogger.error(e);
+        logger.error(e)
         throw new Error('unimplemented error')
     }finally{
         //  && guard operator we are making sure that client is exist then we release
@@ -61,7 +63,8 @@ export async function findBookingByCustomer(userId:number):Promise<Bookings>{
         if(error.message === 'Booking Not Found'){
             throw new BookingNotFound();
         }
-        console.log(error)
+        errorLogger.error(error)
+        logger.error(error)
         throw new Error('unimplemented error handling')
     }finally{
         //  && guard operator we are making sure that client is exist then we release
@@ -98,7 +101,8 @@ export async function submitNewBooking(newBooking: Bookings):Promise<Bookings>{
         if(error.message === 'Style not found'){
             throw new BookingInputError();
         }
-        console.log(error)
+        errorLogger.error(error)
+        logger.error(error)
         throw new Error('Unimplemented error handling')
     }finally{
         client && client.release();
@@ -173,7 +177,8 @@ export async function updateExistingBooking(updateBooking:Bookings): Promise <Bo
         }else if(error.message ===  'Invalid ID'){
             throw new Error ('Invalid ID')
         }
-        console.log(error);
+        errorLogger.error(error)
+        logger.error(error)
         throw new Error('Unhandled Error')
     }finally {
         client && client.release()
@@ -200,7 +205,8 @@ export async function findBookingByBookingId(id:number):Promise<Bookings>{
         if(error.message === 'Booking not found'){
             throw new BookingNotFound()
         }
-        console.error();
+        errorLogger.error(error)
+        logger.error(error)
         throw new Error('Unimplemented error')
     }finally{
         //  && guard operator we are making sure that client is exist then we release
@@ -228,7 +234,8 @@ export async function findBookingByArtistId(userId:number):Promise<Bookings>{
         if(error.message === 'Booking Not Found'){
             throw new BookingNotFound();
         }
-        console.log(error)
+        errorLogger.error(error)
+        logger.error(error)
         throw new Error('unimplemented error handling')
     }finally{
         client && client.release()
@@ -257,7 +264,8 @@ export async function findArtistByStyle(id:number) {
         if(e.message === 'NotFound'){
             throw new ArtistNotFound()
         }
-        console.log(e)
+        errorLogger.error(e)
+        logger.error(e)
         throw new Error('Unimplemented error handling')
     }finally{
         client && client.release()
@@ -283,7 +291,8 @@ export async function findShopByArtist(id:number) {
         if(e.message === 'NotFound'){
             throw new ShopNotFound()
         }
-        console.log(e)
+        errorLogger.error(e)
+        logger.error(e)
         throw new Error('Unimplemented error handling')
     }finally{
         client && client.release()

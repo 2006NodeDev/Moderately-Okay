@@ -1,4 +1,6 @@
 import { imageBucket } from ".";
+import { errorLogger, logger } from "../../utils/logger";
+import { error } from "console";
 
 
 //fugure o
@@ -17,7 +19,8 @@ export async function SaveTattooImage(contentType:string, imageBase64Data:string
         })
         console.log('post file save')
     } catch(e){
-        console.log(e);
+        errorLogger.error(error)
+        logger.error(error)
         throw e  
     }
    

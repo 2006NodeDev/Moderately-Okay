@@ -3,7 +3,6 @@ import { bookingRouter } from './routers/bookings-router';
 import { loggingMiddleware } from './middlewares/logging-middleware';
 
 import { corsFilter } from './middlewares/cors-filter';
-import { JWTVerifyMiddleware } from './middlewares/jwt-verify-middleware';
 
 
 const app = express();
