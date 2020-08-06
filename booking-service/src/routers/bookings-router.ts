@@ -5,7 +5,6 @@ import { BookingInputError } from '../errors/BookingInputError';
 
 
 import { getAllBookingsService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByCustomerService, findBookingByArtistIdService, findShopByArtistService } from '../services/booking-service';
-import { JWTVerifyMiddleware } from '../middlewares/jwt-verify-middleware';
 
 
 //updateBooking
@@ -23,7 +22,7 @@ BASIC FUNCTIONALITIES:
 */
 
 export let bookingRouter = express.Router();
-bookingRouter.use(JWTVerifyMiddleware)
+
 //bookingRouter.use(authenticationMiddleware)
 
 //updated this func to reflect booking DONE
@@ -58,9 +57,9 @@ bookingRouter.get('/customer/:userId', async(req:Request, res:Response, next:Nex
 })
 
 
-// Submit a reimbursment
-bookingRouter.post('/newbooking', async (req:any, res:Response, next:NextFunction)=>{
-
+// Submit a booking
+bookingRouter.post('/newbooking', async(req:any, res:Response, next:NextFunction)=>{
+    console.log(req.body);
     let{
         style,
         size,
@@ -72,7 +71,7 @@ bookingRouter.post('/newbooking', async (req:any, res:Response, next:NextFunctio
         date
     } = req.body
 
-    let customer = req.user.user_id;
+    let customer = req.user.user_id
     //console.log(author)
     if( !customer || !style || !size  || !location){
         next(new BookingInputError())

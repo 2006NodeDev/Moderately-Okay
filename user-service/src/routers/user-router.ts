@@ -11,7 +11,9 @@ import { JWTVerifyMiddleware } from '../middlewares/jwt-verify-middleware';
 
 
 export let userRouter = express.Router();
-userRouter.use(JWTVerifyMiddleware)
+
+
+
 //new user
 userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) => {
     // get input from the user
@@ -46,6 +48,7 @@ userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) =>
 })
 
 userRouter.use(authenticationMiddleware)
+userRouter.use(JWTVerifyMiddleware)
 
 //get all
 userRouter.get('/', authorizationMiddleWare(['admin']), async (req:any, res:Response, next:NextFunction)=>{

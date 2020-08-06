@@ -3,6 +3,7 @@ import { bookingRouter } from './routers/bookings-router';
 import { loggingMiddleware } from './middlewares/logging-middleware';
 
 import { corsFilter } from './middlewares/cors-filter';
+import { JWTVerifyMiddleware } from './middlewares/jwt-verify-middleware';
 
 
 const app = express();
@@ -11,7 +12,7 @@ app.use(express.json({limit:'50mb'}))
 app.use(loggingMiddleware)
 app.use(corsFilter)
 
-
+bookingRouter.use(JWTVerifyMiddleware)
 
 //app.use(authenticationMiddleware) //asks for username and password 
 // custom middleware to run on all request
