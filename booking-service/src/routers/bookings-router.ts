@@ -1,12 +1,11 @@
 import express, {Request, Response, NextFunction} from 'express'
 import { InvalidIdError } from '../errors/InvalidIdError';
-
-
 import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
 
 
 import { getAllBookingsService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByCustomerService, findBookingByArtistIdService, findShopByArtistService } from '../services/booking-service';
+import { JWTVerifyMiddleware } from '../middlewares/jwt-verify-middleware';
 
 
 //updateBooking
@@ -24,7 +23,7 @@ BASIC FUNCTIONALITIES:
 */
 
 export let bookingRouter = express.Router();
-
+bookingRouter.use(JWTVerifyMiddleware)
 //bookingRouter.use(authenticationMiddleware)
 
 //updated this func to reflect booking DONE
@@ -41,7 +40,7 @@ bookingRouter.get('/' ,async (req:Request, res:Response, next:NextFunction)=>{
 
 //updates function name, exports, calls, and variables DONE
 // Updated booking fields per db PENDING
-bookingRouter.get('/customer/:userId', /*authorizationMiddleWare(['admin', 'user']),*/ async(req:Request, res:Response, next:NextFunction)=>{
+bookingRouter.get('/customer/:userId', async(req:Request, res:Response, next:NextFunction)=>{
     let {userId} = req.params
    if(isNaN(+userId)){
         throw new InvalidIdError()
@@ -60,7 +59,7 @@ bookingRouter.get('/customer/:userId', /*authorizationMiddleWare(['admin', 'user
 
 
 // Submit a reimbursment
-bookingRouter.post('/newbooking', async (req:Request, res:Response, next:NextFunction)=>{
+bookingRouter.post('/newbooking', async (req:any, res:Response, next:NextFunction)=>{
 
     
     let{
@@ -74,7 +73,7 @@ bookingRouter.post('/newbooking', async (req:Request, res:Response, next:NextFun
         date
     } = req.body
 
-    let customer = req.session.user.user_id;
+    let customer = req.user.user_id;
     //console.log(author)
     if( !customer || !style || !size  || !location){
         next(new BookingInputError())
@@ -90,16 +89,7 @@ bookingRouter.post('/newbooking', async (req:Request, res:Response, next:NextFun
             artist,
             shop,
             date,
-            //  time
-           // reimbursement_id: 0,
-            //author,
-            //amount,
-            //date_submitted: new Date(),
-            //date_resolved: null ,
-           // description,
-            //resolver:null,
-            //status:3,
-            //type,
+        
         }
         try {
             let submitBookingRes = await SubmitNewBookingService(newBooking)
@@ -129,8 +119,6 @@ bookingRouter.patch('/', async (req:Request, res:Response, next:NextFunction)=>{
     } = req.body
     if(!bookingId || isNaN(bookingId)){
         next (new InvalidIdError());    
-    //}else if(req.session.user.userId !== +customer  && req.session.user.role === "customer" || req.session.user.role === "artist"){
-     //   next(new AuthenticationFailure())
     }else {
         let updatedBooking:Bookings ={
             bookingId,
@@ -166,12 +154,11 @@ bookingRouter.patch('/', async (req:Request, res:Response, next:NextFunction)=>{
 
   //get booking by Artist
 
-  bookingRouter.get('/artist/:userId', /*authorizationMiddleWare(['admin', 'user']),*/ async(req:Request, res:Response, next:NextFunction)=>{
+  bookingRouter.get('/artist/:userId',  async(req:any, res:Response, next:NextFunction)=>{
     let {userId} = req.params
    if(isNaN(+userId)){
         throw new InvalidIdError()
-    //} else if(req.session.user.userId !== +userId && req.session.user.role === "user"){
-     //   next(new AuthenticationFailure())
+
      }else {
         try {
             let bookingByUserId = await findBookingByArtistIdService(+userId)

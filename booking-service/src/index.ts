@@ -13,7 +13,7 @@ app.use(loggingMiddleware)
 app.use(corsFilter)
 
 
-app.use(JWTVerifyMiddleware)
+
 //app.use(authenticationMiddleware) //asks for username and password 
 // custom middleware to run on all request
 app.use('/bookings', bookingRouter)
