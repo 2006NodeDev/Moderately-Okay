@@ -3,9 +3,9 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { modokaysignup } from '../../remote/moderatelyokay-api/moderatelyokaysignup'
 import { User } from '../../models/User'
+import { Typography } from '@material-ui/core'
 
-
-export const SignUpComponent: FunctionComponent<any> = (props) => {
+export const SignUpComponent: FunctionComponent<any> = (props) => {  
 
   //username and a password 
   let [role, changeRole] = useState('');
@@ -58,12 +58,11 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
       password,
       firstName,
       lastName,
-      birthday: new Date,
+      birthday,
       phoneNumber,
       email,
       role,
       userId: 0,
-
     }
 
     let res = await modokaysignup(newUser)
@@ -71,25 +70,31 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
   const roles = [
     {
         value: '2',
-        label: 'User',
+        label: 'customer',
     },
     {
         value: '3',
-        label: 'Artist',
+        label: 'artist',
     },
 ];
-
   return (
     <div>
       <form autoComplete="off" onSubmit={signupSubmit}>
-
+         <br></br>
+        <Typography component="h1" variant="h5">
+         Sign up
+        </Typography>
+             <br></br>
         <TextField id="outlined-basic" label="Username" variant="outlined" value={username} onChange={updateUsername} /><br /><br />
         <TextField id="outlined-basic" type="password" label="Password" variant="outlined" value={password} onChange={updatePassword} /><br /><br />
         <TextField id="outlined-basic" label="First Name" variant="outlined" value={firstName} onChange={updateFirstname} /><br /><br />
         <TextField id="outlined-basic" label="Last Name" variant="outlined" value={lastName} onChange={updateLastname} /><br /><br />
         <TextField id="outlined-basic" label="Email" variant="outlined" value={email} onChange={updateEmail} /><br /><br />
-        <TextField id="outlined-basic" label="Birthday" variant="outlined" value={birthday} onChange={updateBirthday} /><br /><br />
         <TextField id="outlined-basic" label="Phone Number" variant="outlined" value={phoneNumber} onChange={updatePhoneNumber} /><br /><br />
+        <TextField id="outlined-basic" label="Birthday" type="date" defaultValue="2017-05-24"
+             InputLabelProps={{
+             shrink: true,
+             }}variant="outlined" value={birthday} onChange={updateBirthday} /><br /><br />
         <TextField
                     id="outlined-select-currency-native"
                     select
@@ -107,9 +112,13 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
                             {option.label}
                         </option>
                     ))}
-                </TextField>
+                </TextField>       
+                <br></br>
+                <br></br>
         <Button type="submit" variant="outlined" >Sign Up</Button>
-      </form>
+                <br></br>
+                <br></br>
+        </form>
     </div>
   )
 }

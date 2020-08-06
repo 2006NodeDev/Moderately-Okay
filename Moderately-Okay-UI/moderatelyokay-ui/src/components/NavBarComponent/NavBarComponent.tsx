@@ -69,8 +69,8 @@ export const NavBarComponent: FunctionComponent<any> = (props) => {
             onClose={handleClose}>
             {menuItems}
           </Menu>
-          <Typography variant="h6" className={classes.title}>
-            Moderately Okay
+          <Typography variant="h5" className={classes.title}>
+            Tattoo Booking
           </Typography>
         </Toolbar>
       </AppBar>

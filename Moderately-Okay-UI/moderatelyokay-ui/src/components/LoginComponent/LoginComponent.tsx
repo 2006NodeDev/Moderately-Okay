@@ -3,7 +3,9 @@ import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import {modokaylogin} from '../../remote/moderatelyokay-api/moderatelyokaylogin'
 import { RouteComponentProps } from 'react-router'
-import { makeStyles, Theme, createStyles } from '@material-ui/core'
+import { makeStyles, Theme, createStyles, Container, CssBaseline, Typography, Grid, Link, Avatar } from '@material-ui/core'
+//import Avatar from '@material-ui/core/Avatar';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 interface ILoginProps extends RouteComponentProps {
     changeCurrentUser: (newUser: any) => void
@@ -22,8 +24,28 @@ const useStyles = makeStyles((theme: Theme) =>
             borderColor:'#240d0d'
         },
         Button: {
-            color:'240d0d'
-        }
+            marginLeft: theme.spacing(1),
+            marginRight: theme.spacing(1),
+            color:'240d0d',
+        },
+        Link: {
+            marginLeft: theme.spacing(11),
+            marginRight: theme.spacing(11),
+            alignItems: 'center',
+        },
+        paper: {
+            marginTop: theme.spacing(8),
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          },
+          avatar: {
+            marginLeft: theme.spacing(22),
+            marginRight: theme.spacing(22),
+            margin: theme.spacing(1),
+            alignItems: 'center',
+            backgroundColor: theme.palette.primary.dark,
+          },
     }),
 );
 
@@ -48,8 +70,20 @@ export const LoginComponent:FunctionComponent<ILoginProps> =(props) =>{
         props.changeCurrentUser(res)
         changePassword('')
     }
+    const preventDefault = (e:SyntheticEvent)=>{
+        e.preventDefault()
+          props.history.push(`/signup`)
+      }
     return (
-        <div>
+        <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div> 
+            <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+             </Avatar>
+            <Typography component="h1" variant="h5">
+             Sign in
+            </Typography>
             <form autoComplete="off" onSubmit={loginSubmit}>
                 <TextField
                     id="filled-full-width"
@@ -84,8 +118,18 @@ export const LoginComponent:FunctionComponent<ILoginProps> =(props) =>{
                     variant="filled"
                 />
                 <br></br>
-                <Button className={classes.Button} type='submit' variant="contained">Login</Button>
-            </form>
+                <Button fullWidth className={classes.Button} type='submit' variant="contained">Login</Button>   
+         
+            <Grid container>
+            <Grid item>
+              <br></br>
+              <Link className={classes.Link} onClick={preventDefault} href="/signup" variant="body2">
+              {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+            </Grid>
+        </form>
         </div>
+        </Container>
     )
 }
