@@ -5,6 +5,7 @@ import { sessionMiddleware } from './middlewares/session-middleware';
 import { corsFilter } from './middlewares/cors-filter';
 import {userRouter} from './routers/user-router';
 import {InvalidCredentialsError} from  './errors/InvalidCredentialsError';
+import jwt from 'jsonwebtoken'
 
 const app = express();
 
@@ -30,8 +31,8 @@ app.post('/login', async (req:Request, res:Response, next:NextFunction)=>{
     }else{
         try {
             let user = await getUserByusernameAndPassword(username, password)
-            req.session.user = user // adding user data to the session
-            //so we can use that data for other requests 
+            let token = jwt.sign(user, 'thisIsASecret', {expiresIn: '1h'})
+            res.header('Authorization', `Bearer ${token}`)
             res.json(user)
         } catch (error) {
             next(error)

@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 export function corsFilter(req:Request, res:Response, next:NextFunction){
 //we always have to set Access-Control-Allow-Origin header on every request
     res.header('Access-Control-Allow-Origin',  `${req.headers.origin}`) // this is bad, don't do this when your app is deployed
-    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept')
+    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization')
     res.header('Access-Control-Allow-Credentials', 'true')
     res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE')
 
