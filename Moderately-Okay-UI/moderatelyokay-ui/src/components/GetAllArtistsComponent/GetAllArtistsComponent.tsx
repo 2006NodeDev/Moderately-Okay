@@ -18,7 +18,6 @@ export const AllArtistsComponent:FunctionComponent<any> = (props) => {
         }
     })
 
-
     let userDisplays = allArtists.map((user)=>{
         return <UserDisplayComponent key={'user-key-' + user.userId} user={user}/>
     })

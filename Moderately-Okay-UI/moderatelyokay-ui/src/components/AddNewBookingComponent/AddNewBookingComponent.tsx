@@ -1,7 +1,10 @@
 import React, { FunctionComponent, SyntheticEvent, useState } from 'react'
-import { Button, TextField, makeStyles, Theme, createStyles} from '@material-ui/core'
+import { Button, TextField, makeStyles, Theme, createStyles } from '@material-ui/core'
 import { Bookings } from '../../models/Bookings'
 import { addNewBooking } from '../../remote/moderatelyokay-api/moderatelyokayaddnewbooking'
+//import {MuiPickersUtilsProvider} from '@material-ui/pickers'
+//import DateFnsUtils from '@date-io/date-fns'
+//import {DateTimePicker} from '@material-ui/pickers'
 
 
 const styles = [
@@ -51,6 +54,17 @@ const styles = [
     },
 ];
 
+const colors = [
+    {
+        value: 'true',
+        label: 'Color',
+    },
+    {
+        value: 'false',
+        label: 'Black and White',
+    },
+];
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -58,6 +72,15 @@ const useStyles = makeStyles((theme: Theme) =>
                 margin: theme.spacing(1),
                 width: '25ch',
             },
+        },
+        container: {
+            display: 'flex',
+            flexWrap: 'wrap',
+        },
+        textField: {
+            marginLeft: theme.spacing(1),
+            marginRight: theme.spacing(1),
+            width: 200,
         },
     }),
 );
@@ -74,7 +97,7 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
     let [color, changeColor] = useState(false)
     let [artist, changeArtist] = useState(0)
     let [shop, changeShop] = useState(0)
-    let [date, changeDate] = useState(0)
+    let [date, changeDate] = useState(new Date())
 
 
     const updateCustomer = (e: any) => {
@@ -135,6 +158,8 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
     //customer, artist not null
     //everything else is optional
     //Customer, Style, Artist, Shop are all ID, Maybe do a drop down menu so they don't have to know the # ?
+    //style and color are drop down to make it easier
+    //date is in the wrong format and I'm not sure how to fix it
     return (
         <div>
             <form onSubmit={submitBooking}>
@@ -160,10 +185,37 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
                 <TextField id="standard-basic" label="Size" value={size || ''} onChange={updateSize} />
                 <TextField id="standard-basic" label="Location" value={location || ''} onChange={updateLocation} />
                 <TextField id="standard-basic" label="Image" value={imageTest || ''} onChange={updateImageTest} />
-                <TextField id="standard-basic" label="Color" value={color || false} onChange={updateColor} />
+                <TextField
+                    id="outlined-select-currency-native"
+                    select
+                    label="Color"
+                    value={color}
+                    onChange={updateColor}
+                    SelectProps={{
+                        native: true,
+                    }}
+                    helperText="Color or Black and White?"
+                    variant="outlined"
+                >
+                    {colors.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </TextField>
                 <TextField id="standard-basic" label="Artist" value={artist} onChange={updateArtist} />
                 <TextField id="standard-basic" label="Shop" value={shop || 0} onChange={updateShop} />
-                <TextField id="standard-basic" label="Date" value={date || 0} onChange={updateDate} />
+                <TextField
+                    id="datetime-local"
+                    label="Appointment Date and Time"
+                    type="datetime-local"
+                    value={date}
+                    onChange={updateDate}
+                    defaultValue="2020-08-24T10:30"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                />
                 <Button variant="contained" type='submit'>Submit</Button>
             </form>
         </div>
