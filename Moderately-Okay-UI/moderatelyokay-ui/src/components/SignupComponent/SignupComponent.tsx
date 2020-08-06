@@ -1,31 +1,13 @@
 import React, { FunctionComponent, useState, SyntheticEvent } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-//import FormHelperText from '@material-ui/core/FormHelperText';
-//import InputLabel from '@material-ui/core/InputLabel';
-//import MenuItem from '@material-ui/core/MenuItem';
-//import FormControl from '@material-ui/core/FormControl';
-//import Select from '@material-ui/core/Select';
 import { modokaysignup } from '../../remote/moderatelyokay-api/moderatelyokaysignup'
 import { User } from '../../models/User'
+import { Typography } from '@material-ui/core'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-  }),
-);
-
-export const SignUpComponent: FunctionComponent<any> = (props) => {
+export const SignUpComponent: FunctionComponent<any> = (props) => {  
 
   //username and a password 
-  const classes = useStyles();
   let [role, changeRole] = useState('');
   let [username, changeUsername] = useState('')
   let [password, changePassword] = useState('')
@@ -33,7 +15,7 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
   let [lastName, changeLastname] = useState('')
   let [phoneNumber, changePhoneNumber] = useState('')
   let [email, changeEmail] = useState('')
-  let [birthday, changeBirthday] = useState(undefined)
+  let [birthday, changeBirthday] = useState(new Date())
 
 
   const updatePassword = (event: any) => {//get callback for events
@@ -44,16 +26,16 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
     event.preventDefault()
     changeUsername(event.currentTarget.value)
   }
-  const updateFirstname = (event: any) => {//get callback for events
-    event.preventDefault() //stop default behavior of the event 
+  const updateFirstname = (event: any) => {
+    event.preventDefault()  
     changeFirstname(event.currentTarget.value)
   }
-  const updateLastname = (event: any) => {//get callback for events
-    event.preventDefault() //stop default behavior of the event 
+  const updateLastname = (event: any) => {
+    event.preventDefault()  
     changeLastname(event.currentTarget.value)
   }
-  const updateEmail = (event: any) => {//get callback for events
-    event.preventDefault() //stop default behavior of the event 
+  const updateEmail = (event: any) => {
+    event.preventDefault()  
     changeEmail(event.currentTarget.value)
   }
   const updatePhoneNumber = (event: any) =>{
@@ -64,45 +46,79 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
     event.preventDefault()
     changeRole(event.currentTarget.value)
   }
-  const updateBirthday = (event: any) => {//get callback for events
-    event.preventDefault() //stop default behavior of the event 
+  const updateBirthday = (event: any) => {
+    event.preventDefault() 
     changeBirthday(event.currentTarget.value)
   }
 
   const signupSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
-    changePassword('')
-
     let newUser: User = {
       username,
       password,
       firstName,
       lastName,
-      birthday: new Date,
+      birthday,
       phoneNumber,
       email,
       role,
       userId: 0,
-
     }
 
     let res = await modokaysignup(newUser)
   }
-
-
+  const roles = [
+    {
+        value: '2',
+        label: 'customer',
+    },
+    {
+        value: '3',
+        label: 'artist',
+    },
+];
   return (
     <div>
       <form autoComplete="off" onSubmit={signupSubmit}>
-
+         <br></br>
+        <Typography component="h1" variant="h5">
+         Sign up
+        </Typography>
+             <br></br>
         <TextField id="outlined-basic" label="Username" variant="outlined" value={username} onChange={updateUsername} /><br /><br />
         <TextField id="outlined-basic" type="password" label="Password" variant="outlined" value={password} onChange={updatePassword} /><br /><br />
         <TextField id="outlined-basic" label="First Name" variant="outlined" value={firstName} onChange={updateFirstname} /><br /><br />
         <TextField id="outlined-basic" label="Last Name" variant="outlined" value={lastName} onChange={updateLastname} /><br /><br />
         <TextField id="outlined-basic" label="Email" variant="outlined" value={email} onChange={updateEmail} /><br /><br />
-        <TextField id="outlined-basic" label="Birthday" variant="outlined" value={birthday} onChange={updateBirthday} /><br /><br />
         <TextField id="outlined-basic" label="Phone Number" variant="outlined" value={phoneNumber} onChange={updatePhoneNumber} /><br /><br />
-        <Button type="submit" variant="outlined" color="primary" href="#outlined-buttons">Sign Up</Button>
-      </form>
+        <TextField id="outlined-basic" label="Birthday" type="date" defaultValue="2017-05-24"
+             InputLabelProps={{
+             shrink: true,
+             }}variant="outlined" value={birthday} onChange={updateBirthday} /><br /><br />
+        <TextField
+                    id="outlined-select-currency-native"
+                    select
+                    label="Role"
+                    value={role}
+                    onChange={updateRole}
+                    SelectProps={{
+                        native: true,
+                    }}
+                    helperText="Select Role"
+                    variant="outlined"
+                >
+                    {roles.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </TextField>       
+                <br></br>
+                <br></br>
+        <Button type="submit" variant="outlined" >Sign Up</Button>
+                <br></br>
+                <br></br>
+        </form>
     </div>
   )
 }

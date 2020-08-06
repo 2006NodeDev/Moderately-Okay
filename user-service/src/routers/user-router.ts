@@ -47,7 +47,7 @@ userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) =>
 userRouter.use(authenticationMiddleware)
 
 //get all
-userRouter.get('/', authorizationMiddleWare(['admin']), async (req:Request, res:Response, next:NextFunction)=>{
+userRouter.get('/', authorizationMiddleWare(['admin']), async (req:any, res:Response, next:NextFunction)=>{
     try {
         let getAllusers = await getAllUsersService()
         res.json(getAllusers)
@@ -57,11 +57,11 @@ userRouter.get('/', authorizationMiddleWare(['admin']), async (req:Request, res:
 })
 
 //find by id
-userRouter.get('/userid/:id', authorizationMiddleWare(['admin' ,'customer', 'artist']), async (req:Request, res:Response, next:NextFunction) =>{
+userRouter.get('/userid/:id', authorizationMiddleWare(['admin' ,'customer', 'artist']), async (req:any, res:Response, next:NextFunction) =>{
     let {id} = req.params
     if(isNaN(+id)){
         res.status(400).send('Id must be a number')
-    }else if(req.session.user.userId !== +id && req.session.user.role === "customer" && req.session.user.role === "artist"){
+    }else if(req.user.userId !== +id && req.user.role === "customer" && req.user.role === "artist"){
         next(new AuthenticationFailure())
     }
     else {
@@ -76,7 +76,7 @@ userRouter.get('/userid/:id', authorizationMiddleWare(['admin' ,'customer', 'art
 
 // Update User / Allowed Admin // For Project 1 user can also update his/her own info
 
-userRouter.patch('/', authorizationMiddleWare(['admin', 'customer', 'artist']), async (req:Request, res:Response, next:NextFunction)=>{
+userRouter.patch('/', authorizationMiddleWare(['admin', 'customer', 'artist']), async (req:any, res:Response, next:NextFunction)=>{
     
         let{
         userId,
@@ -93,7 +93,7 @@ userRouter.patch('/', authorizationMiddleWare(['admin', 'customer', 'artist']), 
         if(!userId || isNaN(req.body.userId)){
             next(new InvalidIdError())
             
-        }else if(req.session.user.userId !== +userId  && req.session.user.role === "customer" || req.session.user.role === "artist"){
+        }else if(req.user.userId !== +userId  && req.user.role === "customer" || req.user.role === "artist"){
             next(new AuthenticationFailure())
         }else { 
         let updatedUser: Users = {

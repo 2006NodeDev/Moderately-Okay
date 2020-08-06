@@ -1,11 +1,11 @@
 import  express, { Request, Response, NextFunction } from 'express';
 import { loggingMiddleware } from './middlewares/logging-middleware';
 import { getUserByusernameAndPassword } from './daos/SQL/user-dao';
-import { sessionMiddleware } from './middlewares/session-middleware';
 import { corsFilter } from './middlewares/cors-filter';
 import {userRouter} from './routers/user-router';
 import {InvalidCredentialsError} from  './errors/InvalidCredentialsError';
 import jwt from 'jsonwebtoken'
+import { JWTVerifyMiddleware } from './middlewares/jwt-verify-middleware';
 
 const app = express();
 
@@ -13,7 +13,7 @@ app.use(express.json({limit:'50mb'}))
 app.use(loggingMiddleware)
 app.use(corsFilter)
 
-app.use(sessionMiddleware)
+app.use(JWTVerifyMiddleware)
 //app.use(authenticationMiddleware) //asks for username and password 
 // custom middleware to run on all request
 

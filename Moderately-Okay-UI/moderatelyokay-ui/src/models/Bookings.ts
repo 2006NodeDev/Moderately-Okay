@@ -9,5 +9,5 @@ export interface Bookings {
      color: boolean 
      artist: number 
      shop: number 
-     date: number 
+     date: Date 
  }

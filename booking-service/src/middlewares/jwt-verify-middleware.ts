@@ -1,7 +1,7 @@
   
 import { Response, NextFunction} from "express";
 import jwt from 'jsonwebtoken'
-import { logger, errorLogger } from "../utils/loggers";
+import { logger, errorLogger } from "../utils/logger";
 
 
 export const JWTVerifyMiddleware = (req: any, res: Response, Next: NextFunction) => {
