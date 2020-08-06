@@ -6,11 +6,12 @@ import { AuthenticationFailure } from '../errors/AuthenticationFailure';
 import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { getAllUsersService, findUserByIdService, UpdateExistingUserService, SubmitNewUserService, getAllArtistsService, } from '../services/user-service';
 import { UserMissingInputError } from '../errors/UserMissingInputError';
+import { JWTVerifyMiddleware } from '../middlewares/jwt-verify-middleware';
+
 
 
 export let userRouter = express.Router();
-
-
+userRouter.use(JWTVerifyMiddleware)
 //new user
 userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) => {
     // get input from the user
