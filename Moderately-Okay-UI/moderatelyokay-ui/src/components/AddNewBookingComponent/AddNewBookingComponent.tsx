@@ -2,9 +2,9 @@ import React, { FunctionComponent, SyntheticEvent, useState } from 'react'
 import { Button, TextField, makeStyles, Theme, createStyles } from '@material-ui/core'
 import { Bookings } from '../../models/Bookings'
 import { addNewBooking } from '../../remote/moderatelyokay-api/moderatelyokayaddnewbooking'
-import {MuiPickersUtilsProvider} from '@material-ui/pickers'
-import DateFnsUtils from '@date-io/date-fns'
-import {DateTimePicker} from '@material-ui/pickers'
+//import {MuiPickersUtilsProvider} from '@material-ui/pickers'
+//import DateFnsUtils from '@date-io/date-fns'
+//import {DateTimePicker} from '@material-ui/pickers'
 
 
 const styles = [

@@ -72,7 +72,6 @@ export const NavBarComponent: FunctionComponent<any> = (props) => {
           <Typography variant="h6" className={classes.title}>
             Moderately Okay
           </Typography>
-          <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
     </nav>
