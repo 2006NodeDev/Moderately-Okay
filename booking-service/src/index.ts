@@ -12,7 +12,7 @@ app.use(express.json({limit:'50mb'}))
 app.use(loggingMiddleware)
 app.use(corsFilter)
 
-bookingRouter.use(JWTVerifyMiddleware)
+app.use(JWTVerifyMiddleware)
 
 //app.use(authenticationMiddleware) //asks for username and password 
 // custom middleware to run on all request
