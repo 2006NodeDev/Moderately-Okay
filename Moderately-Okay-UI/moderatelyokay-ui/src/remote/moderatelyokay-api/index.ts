@@ -6,6 +6,5 @@ export const modokayClient = axios.create({
     headers:{
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer '
-    },
-    withCredentials:true
+    }
 })
