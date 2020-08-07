@@ -5,6 +5,7 @@ import { corsFilter } from './middlewares/cors-filter';
 import {userRouter} from './routers/user-router';
 import {InvalidCredentialsError} from  './errors/InvalidCredentialsError';
 import jwt from 'jsonwebtoken'
+import { JWTVerifyMiddleware } from './middlewares/jwt-verify-middleware';
 
 
 const app = express();
@@ -13,7 +14,7 @@ app.use(express.json({limit:'50mb'}))
 app.use(loggingMiddleware)
 app.use(corsFilter)
 
-
+userRouter.use(JWTVerifyMiddleware)
 //app.use(authenticationMiddleware) //asks for username and password 
 // custom middleware to run on all request
 

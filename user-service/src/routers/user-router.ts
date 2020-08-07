@@ -6,13 +6,8 @@ import { AuthenticationFailure } from '../errors/AuthenticationFailure';
 import { authenticationMiddleware } from '../middlewares/authentication-middleware';
 import { getAllUsersService, findUserByIdService, UpdateExistingUserService, SubmitNewUserService, getAllArtistsService, } from '../services/user-service';
 import { UserMissingInputError } from '../errors/UserMissingInputError';
-import { JWTVerifyMiddleware } from '../middlewares/jwt-verify-middleware';
-
-
 
 export let userRouter = express.Router();
-
-
 
 //new user
 userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) => {
@@ -47,8 +42,9 @@ userRouter.post('/',  async (req: Request, res: Response, next: NextFunction) =>
     }
 })
 
+
 userRouter.use(authenticationMiddleware)
-userRouter.use(JWTVerifyMiddleware)
+
 
 //get all
 userRouter.get('/', authorizationMiddleWare(['admin']), async (req:any, res:Response, next:NextFunction)=>{
@@ -119,8 +115,7 @@ userRouter.patch('/', authorizationMiddleWare(['admin', 'customer', 'artist']), 
         updatedUser.phoneNumber = phoneNumber || undefined
         updatedUser.email = email || undefined
         updatedUser.role = role || undefined
-
-
+        
         console.log(updatedUser)
         try {
             let updateResults = await UpdateExistingUserService(updatedUser)
