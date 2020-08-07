@@ -1,5 +1,5 @@
 {
-  "name": "project-2",
+  "name": "tattoobooking-booking-service",
   "version": "1.0.0",
   "description": "Project 2. Allows for customers to search for tattoo artists and book appointments with them.",
   "main": "src/index.ts",

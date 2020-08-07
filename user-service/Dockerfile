@@ -6,9 +6,9 @@ FROM  node:12.18-stretch
 #copy in the service account key for GCP
 
 
-COPY build  moderately-okay-user-service/build/
-COPY node_modules moderately-okay-user-service/node_modules/
+COPY build  tattoobooking-user-service/build/
+COPY node_modules tattoobooking-user-service/node_modules/
 
 #this is the command that starts our application
-CMD npm run deploy --prefix moderately-okay-booking-service/build
+CMD npm run deploy --prefix tattoobooking-user-service/build
 # FROM and CMD that we need to put in docker file 
