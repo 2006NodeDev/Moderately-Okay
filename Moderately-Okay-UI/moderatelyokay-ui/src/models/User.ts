@@ -9,5 +9,5 @@ export interface User{
     birthday: Date
     phoneNumber: string
     email: string
-    role: number
+    role: string
 }
