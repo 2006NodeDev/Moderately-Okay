@@ -92,7 +92,7 @@ export const UpdateUserComponent: FunctionComponent<any> = (props) => {
       birthday: new Date,
       phoneNumber,
       email,
-      role: '',
+      role: 0,
 
     }
     let res = await modOkayUpdateUser(updatedUser) 
