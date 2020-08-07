@@ -4,11 +4,13 @@ import Button from '@material-ui/core/Button'
 import { modokaysignup } from '../../remote/moderatelyokay-api/moderatelyokaysignup'
 import { User } from '../../models/User'
 import { Typography } from '@material-ui/core'
+//import classes from '*.module.css'
+
 
 export const SignUpComponent: FunctionComponent<any> = (props) => {  
 
   //username and a password 
-  let [role, changeRole] = useState('');
+  let [role, changeRole] = React.useState(2);
   let [username, changeUsername] = useState('')
   let [password, changePassword] = useState('')
   let [firstName, changeFirstname] = useState('')
@@ -44,7 +46,7 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
   }
   const updateRole = (event: any) => {
     event.preventDefault()
-    changeRole(event.currentTarget.value)
+    changeRole(event.target.value)
   }
   const updateBirthday = (event: any) => {
     event.preventDefault() 
@@ -70,16 +72,17 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
   const roles = [
     {
         value: '2',
-        label: 'customer',
+        label: 'Customer',
     },
     {
         value: '3',
-        label: 'artist',
+        label: 'Artist',
     },
 ];
   return (
-    <div>
-      <form autoComplete="off" onSubmit={signupSubmit}>
+
+      <form  noValidate autoComplete="off" onSubmit={signupSubmit}>
+        <div>
          <br></br>
         <Typography component="h1" variant="h5">
          Sign up
@@ -118,7 +121,8 @@ export const SignUpComponent: FunctionComponent<any> = (props) => {
         <Button type="submit" variant="outlined" >Sign Up</Button>
                 <br></br>
                 <br></br>
+                </div>
         </form>
-    </div>
+
   )
 }
