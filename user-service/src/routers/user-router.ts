@@ -152,4 +152,3 @@ userRouter.get('/artist/:id', async (req:Request, res:Response, next:NextFunctio
     }
 })
 
-userRouter.use(JWTVerifyMiddleware)

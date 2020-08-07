@@ -4,9 +4,9 @@ import { getUserByusernameAndPassword } from './daos/SQL/user-dao';
 import { corsFilter } from './middlewares/cors-filter';
 import {userRouter} from './routers/user-router';
 import {InvalidCredentialsError} from  './errors/InvalidCredentialsError';
-import jwt from 'jsonwebtoken'
-import { JWTVerifyMiddleware } from './middlewares/jwt-verify-middleware';
 
+import { JWTVerifyMiddleware } from './middlewares/jwt-verify-middleware';
+import jwt from 'jsonwebtoken'
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(express.json({limit:'50mb'}))
 app.use(loggingMiddleware)
 app.use(corsFilter)
 
-userRouter.use(JWTVerifyMiddleware)
+app.use(JWTVerifyMiddleware)
 //app.use(authenticationMiddleware) //asks for username and password 
 // custom middleware to run on all request
 
@@ -31,15 +31,15 @@ app.post('/login', async (req:any, res:Response, next:NextFunction)=>{
         //res.status(401).send('Please enter a valid username and password')
         next (new InvalidCredentialsError())
     }else{
-        try {
+        try{
             let user = await getUserByusernameAndPassword(username, password)
             //instead of setting session, build and send back a jwt
             let token = jwt.sign(user, 'thisIsASecret', {expiresIn: '1h'})//THE SECRET should be in an env var
             res.header('Authorization', `Bearer ${token}`)
             // so we can use that data in other requests
             res.json(user)
-        } catch (error) {
-            next(error)
+        }catch(e){
+            next(e)
         }
     }
 })

@@ -10,4 +10,4 @@ export function authenticationMiddleware(req:any, res:Response, next:NextFunctio
         logger.debug(`user ${req.user.username} has a role of ${req.user.role}`);
         next()
     }
-}3
+}
