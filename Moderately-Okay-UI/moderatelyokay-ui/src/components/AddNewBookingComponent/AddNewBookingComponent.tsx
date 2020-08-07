@@ -1,5 +1,5 @@
 import React, { FunctionComponent, SyntheticEvent, useState } from 'react'
-import { Button, TextField, makeStyles, Theme, createStyles } from '@material-ui/core'
+import { Button, TextField, makeStyles, Theme, createStyles, Typography, Container, Grid, CssBaseline } from '@material-ui/core'
 import { Bookings } from '../../models/Bookings'
 import { addNewBooking } from '../../remote/moderatelyokay-api/moderatelyokayaddnewbooking'
 //import {MuiPickersUtilsProvider} from '@material-ui/pickers'
@@ -76,19 +76,20 @@ const useStyles = makeStyles((theme: Theme) =>
         container: {
             display: 'flex',
             flexWrap: 'wrap',
+            marginLeft: theme.spacing(30),
+            marginRight: theme.spacing(30),
+            alignItems: 'center',
         },
         textField: {
-            marginLeft: theme.spacing(1),
-            marginRight: theme.spacing(1),
+            marginLeft: theme.spacing(10),
+            marginRight: theme.spacing(10),
+            alignItems: 'center',
             width: 200,
         },
     }),
 );
-
 export const AddNewBookingComponent: FunctionComponent<any> = () => {
-
     const classes = useStyles;
-
     let [customer, changeCustomer] = useState(0)
     let [style, changeStyle] = useState(0)
     let [size, changeSize] = useState('')
@@ -161,13 +162,33 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
     //style and color are drop down to make it easier
     //date is in the wrong format and I'm not sure how to fix it
     return (
+        <Container component="main" maxWidth="xs">
+        <CssBaseline/>
         <div>
             <form onSubmit={submitBooking}>
-                <TextField id="standard-basic" label="Customer" value={customer} onChange={updateCustomer} />
+                <br></br>
+                <Typography component="h5" variant="h5">
+                Add New Booking
+                </Typography>
+                <br></br>
+
+                <Grid container>
+                <Grid item>
+                <br></br>
+                <TextField fullWidth  style={{ margin: 10 }} margin="normal" id="standard-basic" label="Customer" value={customer} onChange={updateCustomer} />
+                <br></br>
+                <br></br>
+                </Grid>
+                </Grid>
+
+                <Grid container>
+                <Grid item>
+                <br></br>
                 <TextField
                     id="outlined-select-currency-native"
                     select
                     label="Style"
+                    fullWidth  style={{ margin: 10 }} margin="normal" 
                     value={style}
                     onChange={updateStyle}
                     SelectProps={{
@@ -182,12 +203,41 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
                         </option>
                     ))}
                 </TextField>
-                <TextField id="standard-basic" label="Size" value={size || ''} onChange={updateSize} />
-                <TextField id="standard-basic" label="Location" value={location || ''} onChange={updateLocation} />
-                <TextField id="standard-basic" label="Image" value={imageTest || ''} onChange={updateImageTest} />
+                <br></br>
+                </Grid>
+                </Grid>
+
+                <Grid container>
+                <Grid item>
+
+                <TextField fullWidth style={{ margin: 10 }} margin="normal" id="standard-basic" label="Size" value={size || ''} onChange={updateSize} />
+                <br></br>
+                </Grid>
+                </Grid>
+
+                <Grid container>
+                <Grid item>
+                <br></br>
+                <TextField fullWidth style={{ margin: 10 }} margin="normal" id="standard-basic" label="Location" value={location || ''} onChange={updateLocation} />
+                <br></br>
+                </Grid>
+                </Grid>
+
+                <Grid container>
+                <Grid item>
+                <br></br>
+                <TextField fullWidth style={{ margin: 10 }} margin="normal" id="standard-basic" label="Image" value={imageTest || ''} onChange={updateImageTest} />
+                <br></br>
+                </Grid>
+                </Grid>
+
+                <Grid container>
+                <Grid item>
+                <br></br>
                 <TextField
                     id="outlined-select-currency-native"
                     select
+                    fullWidth style={{ margin: 10 }} margin="normal"
                     label="Color"
                     value={color}
                     onChange={updateColor}
@@ -203,12 +253,34 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
                         </option>
                     ))}
                 </TextField>
-                <TextField id="standard-basic" label="Artist" value={artist} onChange={updateArtist} />
-                <TextField id="standard-basic" label="Shop" value={shop || 0} onChange={updateShop} />
+                <br></br>
+                </Grid>
+                </Grid>
+
+                <Grid container>
+                <Grid item>
+                <br></br>
+                <TextField fullWidth style={{ margin: 10 }} margin="normal" id="standard-basic" label="Artist" value={artist} onChange={updateArtist} />
+                <br></br>
+                </Grid>
+                </Grid>
+
+                <Grid container>
+                <Grid item>    
+                <br></br>                  
+                <TextField fullWidth style={{ margin: 10 }} margin="normal" id="standard-basic" label="Shop" value={shop || 0} onChange={updateShop} />
+                <br></br>
+                </Grid>
+                </Grid>
+
+                <Grid container>
+                <Grid item>   
+                <br></br>         
                 <TextField
                     id="datetime-local"
                     label="Appointment Date and Time"
                     type="datetime-local"
+                    fullWidth style={{ margin: 10 }} margin="normal"
                     value={date}
                     onChange={updateDate}
                     defaultValue="2020-08-24T10:30"
@@ -216,11 +288,20 @@ export const AddNewBookingComponent: FunctionComponent<any> = () => {
                         shrink: true,
                     }}
                 />
-                <Button variant="contained" type='submit'>Submit</Button>
+                <br></br>         
+                </Grid>
+                </Grid>
+
+                <Grid container>
+                <Grid item>
+                <br></br>
+                <Button fullWidth variant="contained" type='submit'>Submit</Button>
+                <br></br>   
+                <br></br>               
+                </Grid>
+                </Grid>
             </form>
         </div>
+        </Container>
     )
 }
-
-
-
