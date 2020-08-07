@@ -10,7 +10,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 interface ILoginProps extends RouteComponentProps {
     changeCurrentUser: (newUser: any) => void
 }
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -69,6 +68,8 @@ export const LoginComponent:FunctionComponent<ILoginProps> =(props) =>{
         let res = await modokaylogin(username, password)
         props.changeCurrentUser(res)
         changePassword('')
+        props.history.push(`/profile/${res.userId}`)
+
     }
     const preventDefault = (e:SyntheticEvent)=>{
         e.preventDefault()
@@ -128,7 +129,7 @@ export const LoginComponent:FunctionComponent<ILoginProps> =(props) =>{
               </Link>
             </Grid>
             </Grid>
-        </form>
+            </form>
         </div>
         </Container>
     )
