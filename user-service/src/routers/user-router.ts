@@ -111,7 +111,7 @@ userRouter.patch('/', authorizationMiddleWare(['admin', 'customer', 'artist']), 
         updatedUser.password = password || undefined
         updatedUser.firstName = firstName || undefined
         updatedUser.lastName = lastName || undefined
-        updatedUser.birthday = birthday || undefined
+        //updatedUser.birthday = birthday || undefined
         updatedUser.phoneNumber = phoneNumber || undefined
         updatedUser.email = email || undefined
         updatedUser.role = role || undefined
@@ -151,3 +151,5 @@ userRouter.get('/artist/:id', async (req:Request, res:Response, next:NextFunctio
         }
     }
 })
+
+userRouter.use(JWTVerifyMiddleware)
