@@ -20,11 +20,11 @@ export async function getAllBookings():Promise<Bookings[]>{
         //:QueryResult 
         client = await connectionPool.connect()
 
-        let getAllBookingResults:QueryResult = await client.query(`select b.booking_id, u1.user_id as customer,b.size,b.location,b.image,b.color,u2.user_id as artist,b.style,s.style_id,b.shop,sh.shop_id,b.date from tattoobooking_booking_service.bookings b 
+        let getAllBookingResults:QueryResult = await client.query(`select b.booking_id, u1.user_id as customer,b.size,b.location,b.image,b.color,u2.user_id as artist,b.style,s.style_id,b.shop,sh.shop_id,b.date from ${schema}.bookings b 
             left join tattoobooking_user_service.users u1 on b.customer = u1.user_id
-            left join tattoobooking_booking_service.styles s on b.style = s.style_id
+            left join ${schema}.styles s on b.style = s.style_id
             left join tattoobooking_user_service.users u2 on b."artist" = u2.user_id
-            left join tattoobooking_booking_service.shops sh on b.shop = sh.shop_id;`)
+            left join ${schema}.shops sh on b.shop = sh.shop_id;`)
 
       if(getAllBookingResults.rowCount === 0){
 
@@ -120,27 +120,27 @@ export async function updateExistingBooking(updateBooking:Bookings): Promise <Bo
         client = await connectionPool.connect()
         await client.query('BEGIN;')
         if(updateBooking.customer){
-            await client.query(`update tattoobooking_booking_service.bookings  set "customer" = $1 where "booking_id" = $2;`, [updateBooking.customer, updateBooking.bookingId])
+            await client.query(`update ${schema}.bookings  set "customer" = $1 where "booking_id" = $2;`, [updateBooking.customer, updateBooking.bookingId])
         }
         if(updateBooking.style){
-            let style_id = await client.query(`select s.style_id from tattoobooking_booking_service.styles s where s.style_id = $1;` , [updateBooking.style])
+            let style_id = await client.query(`select s.style_id from ${schema}.styles s where s.style_id = $1;` , [updateBooking.style])
             if(style_id.rowCount === 0 ){
                 throw new Error("Styles Not Found")
             }
             style_id= style_id.rows[0].style_id
-            await client.query('update tattoobooking_booking_service.bookings set "style"= $1 where booking_id = $2;' , [style_id, updateBooking.bookingId])
+            await client.query('update ${schema}.bookings set "style"= $1 where booking_id = $2;' , [style_id, updateBooking.bookingId])
         }    
           
         if(updateBooking.size){
-            await client.query(`update tattoobooking_booking_service.bookings  set "size" = $1 where "booking_id" = $2;`, [updateBooking.size, updateBooking.bookingId])
+            await client.query(`update ${schema}.bookings  set "size" = $1 where "booking_id" = $2;`, [updateBooking.size, updateBooking.bookingId])
         }
         if(updateBooking.location){
-            await client.query(`update tattoobooking_booking_service.bookings  set "location" = $1 where "booking_id" = $2;`, [updateBooking.location, updateBooking.bookingId])
+            await client.query(`update ${schema}.bookings  set "location" = $1 where "booking_id" = $2;`, [updateBooking.location, updateBooking.bookingId])
         }
         if(updateBooking.imageTest){
-            await client.query(`update tattoobooking_booking_service.bookings  set "imageTest" = $1 where "booking_id" = $2;`, [updateBooking.imageTest, updateBooking.bookingId])
+            await client.query(`update ${schema}.bookings  set "imageTest" = $1 where "booking_id" = $2;`, [updateBooking.imageTest, updateBooking.bookingId])
         }if(updateBooking.color){
-            await client.query(`update tattoobooking_booking_service.bookings  set "color" = $1 where "booking_id" = $2;`, [updateBooking.color, updateBooking.bookingId])
+            await client.query(`update ${schema}.bookings  set "color" = $1 where "booking_id" = $2;`, [updateBooking.color, updateBooking.bookingId])
         }
         // artist 
         if(updateBooking.artist){
@@ -149,19 +149,19 @@ export async function updateExistingBooking(updateBooking:Bookings): Promise <Bo
                 throw new Error("Artist Not Found")
             }
            user_id=user_id.rows[0].user_id
-            await client.query('update tattoobooking_booking_service.bookings set "artist"= $1 where booking_id = $2;' , [user_id, updateBooking.bookingId])
+            await client.query('update ${schema}.bookings set "artist"= $1 where booking_id = $2;' , [user_id, updateBooking.bookingId])
         }
 
         if(updateBooking.shop){
-            let shop_id = await client.query(`select "shop_id" from tattoobooking_booking_service.shops s where "shop_id" = $1;` , [updateBooking.shop])
+            let shop_id = await client.query(`select "shop_id" from ${schema}.shops s where "shop_id" = $1;` , [updateBooking.shop])
             if(shop_id.rowCount === 0 ){
                 throw new Error("Shop Not Found")
             }
             shop_id= shop_id.rows[0].shop_id
-            await client.query('update tattoobooking_booking_service.bookings set "shop"= $1 where booking_id = $2;' , [shop_id, updateBooking.bookingId])
+            await client.query('update ${schema}.bookings set "shop"= $1 where booking_id = $2;' , [shop_id, updateBooking.bookingId])
         }
         if(updateBooking.date){
-            await client.query(`update tattoobooking_booking_service.bookings  set "date" = $1 where "booking_id" = $2;`, [updateBooking.date, updateBooking.bookingId])
+            await client.query(`update ${schema}.bookings  set "date" = $1 where "booking_id" = $2;`, [updateBooking.date, updateBooking.bookingId])
         }
         
         await client.query('COMMIT;') 
