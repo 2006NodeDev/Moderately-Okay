@@ -2,10 +2,10 @@ import { modokayClient } from "."
 
 
 
-export const findShopByArtistService = async (userId:number) =>{
+export const getAllShops = async () =>{
 
     try{
-        let response = await modokayClient.get(`/shops/artist/${userId}`)
+        let response = await modokayClient.get(`/bookings/shops`)
         return response.data
     } catch(e){
         console.log(e);

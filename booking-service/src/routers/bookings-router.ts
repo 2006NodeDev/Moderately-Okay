@@ -4,7 +4,7 @@ import { Bookings } from '../models/Bookings';
 import { BookingInputError } from '../errors/BookingInputError';
 
 
-import { getAllBookingsService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByCustomerService, findBookingByArtistIdService, findShopByArtistService } from '../services/booking-service';
+import { getAllBookingsService, UpdateExistingBookingService, SubmitNewBookingService, findBookingByCustomerService, findBookingByArtistIdService, getAllShopsService } from '../services/booking-service';
 
 
 //updateBooking
@@ -159,8 +159,8 @@ bookingRouter.patch('/', async (req:Request, res:Response, next:NextFunction)=>{
 
      }else {
         try {
-            let bookingByUserId = await findBookingByArtistIdService(+userId)
-            res.json(bookingByUserId)
+            let bookingByArtistId = await findBookingByArtistIdService(+userId)
+            res.json(bookingByArtistId)
        } catch (error) {
            next(error)
        }
@@ -169,18 +169,12 @@ bookingRouter.patch('/', async (req:Request, res:Response, next:NextFunction)=>{
 
 //get shop by Artist
 
-//is that route clunky? we can change it
-bookingRouter.get('/shops/artist/:userId', async(req:Request, res:Response, next:NextFunction)=>{
-    let {userId} = req.params
-   if(isNaN(+userId)){
-        throw new InvalidIdError()
-     }else {
-        try {
-            let bookingByUserId = await findShopByArtistService(+userId)
-            res.json(bookingByUserId)
-       } catch (error) {
-           next(error)
-       }
+bookingRouter.get('/shops', async (req:Request, res:Response, next:NextFunction)=>{
+    try {
+        let allShops = await getAllShopsService()
+        res.json(allShops)
+    } catch (error) {
+        next(error)
     }
 })
 

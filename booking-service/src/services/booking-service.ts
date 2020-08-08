@@ -3,8 +3,9 @@
 //import { Users } from "../models/Users";
 import { bucketBaseUrl } from "../daos/CloudStorage";
 import { Bookings } from "../models/Bookings";
-import { getAllBookings, submitNewBooking, updateExistingBooking, findBookingByCustomer, findBookingByBookingId, findBookingByArtistId, findShopByArtist } from "../daos/SQL/booking-dao";
+import { getAllBookings, submitNewBooking, updateExistingBooking, findBookingByCustomer, findBookingByBookingId, findBookingByArtistId, getAllShops } from "../daos/SQL/booking-dao";
 import { SaveTattooImage } from "../daos/CloudStorage/booking-images";
+import { Shop } from "../models/shops";
 
 // this call dao
 
@@ -47,6 +48,6 @@ export async function findBookingByArtistIdService(userId:number):Promise<Bookin
     return await findBookingByArtistId(userId)
 }
 
-export async function findShopByArtistService(userId:number):Promise<Bookings>{
-    return await findShopByArtist(userId)
+export async function getAllShopsService():Promise<Shop[]>{
+    return await getAllShops()
 }

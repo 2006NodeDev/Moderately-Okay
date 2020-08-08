@@ -3,7 +3,7 @@ import { modokayClient } from ".";
 
 export const getAllArtistsService = async () =>{
     try{
-        let response = await modokayClient.get('/artists')
+        let response = await modokayClient.get('/bookings/artists')
         return response.data
     }catch(e){
         console.log(e);
