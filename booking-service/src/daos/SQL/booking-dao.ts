@@ -5,9 +5,10 @@ import { BookingNotFound } from "../../errors/BookingNotFoundErrors";
 import { Bookings } from "../../models/Bookings";
 import { BookingInputError } from "../../errors/BookingInputError";
 import { findBookingByBookingIdService } from "../../services/booking-service";
-import { ShopNotFound } from "../../errors/ShopNotFoundError";
 import { ArtistNotFound } from "../../errors/ArtistNotFoundError";
 import { errorLogger, logger } from "../../utils/logger";
+import { Shop } from "../../models/shops";
+import { ShopDTOtoShopConvertor } from "../../utils/ShopDTOConvertor";
 
 const schema = process.env['LB_SCHEMA'] || 'tattoobooking_booking_service'
 //updated getAllBooking func for booking DONE
@@ -272,25 +273,15 @@ export async function findArtistByStyle(id:number) {
     }
 }
 
-export async function findShopByArtist(id:number) {
+//Get all shops
+export async function getAllShops():Promise<Shop[]>{
     let client: PoolClient;
     try{
         client = await connectionPool.connect()
-        let results: QueryResult = await client.query(`select s.shop_id, s.shop_name, s.street_address, s.city, s.state, 
-        s.open_at, s.close_at, s.phone_number, s.email, u.first_name, u.last_name 
-        from ${schema}.shops s 
-        left join ${schema}.shop_artists sa on s.shop_id = sa.shop
-        left join tattoobooking_user_service.users u on sa.artist = u.user_id 
-        where sa.artist = ${id};`)
-        if(results.rowCount === 0){
-            throw new Error('NotFound')
-        }else{
-            return BookingDTOtoBookingConvertor(results.rows[0])
-        }
+        let results:QueryResult = await client.query(`select * 
+        from ${schema}.shops`)
+        return results.rows.map(ShopDTOtoShopConvertor)
     }catch(e){
-        if(e.message === 'NotFound'){
-            throw new ShopNotFound()
-        }
         errorLogger.error(e)
         logger.error(e)
         throw new Error('Unimplemented error handling')
