@@ -8,12 +8,3 @@ style_name: string
 }
 
 
-
-//was reimbursement_status
-/*
-export class reimbursementStatus{
-  status_id: number  // primary key
-  status: string  // not null, unique
-}
-
-*/

@@ -1,7 +1,7 @@
 import { PoolClient, QueryResult } from "pg";
 import { connectionPool } from ".";
 import {BookingDTOtoBookingConvertor } from "../../utils/BookingDTOConvertor";
-import { BookingNotFound } from "../../errors/BookingNotFoundErrors";
+import { BookingNotFound } from "../../errors/BookingNotFoundError";
 import { Bookings } from "../../models/Bookings";
 import { BookingInputError } from "../../errors/BookingInputError";
 import { findBookingByBookingIdService } from "../../services/booking-service";
